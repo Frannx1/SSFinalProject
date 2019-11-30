@@ -32,6 +32,7 @@ public class Human extends Pedestrian {
 
 
     public Zombie transform() {
+        //TODO: Ver si hay  algo del estado del zombie que cambiar o guardar
         return new Zombie(this);
     }
 
