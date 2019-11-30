@@ -2,7 +2,7 @@ package ar.edu.itba.ss.Pedestrian;
 
 import mikera.vectorz.Vector2;
 
-public class Entity {
+public abstract class Entity {
     private double mass;
     private int number;
     private double radius;
@@ -18,9 +18,7 @@ public class Entity {
     public static final double MAX_SPEED = 0.95;
     public static final double SCAPE_SPEED = 0.95;
 
-    public Entity() { }
-
-    public Entity(double x, double y, int number, double velocity, double angle, double mass, double radius) {
+    protected Entity(double x, double y, int number, double velocity, double angle, double mass, double radius) {
         this.number = number;
         this.mass = mass;
         this.coordinate = new Vector2(x, y);
@@ -30,7 +28,7 @@ public class Entity {
         this.radius = radius;
     }
 
-    public Entity(int number, double x, double y, double vx, double vy, double mass) {
+    protected Entity(int number, double x, double y, double vx, double vy, double mass) {
         this.number = number;
         this.mass = mass;
         this.coordinate = new Vector2(x, y);
@@ -38,7 +36,7 @@ public class Entity {
         this.desireDirection = new Vector2(vx, vy).toNormal();
     }
 
-    public Entity(int number, double x, double y, double vx, double vy, double mass, double radius) {
+    protected Entity(int number, double x, double y, double vx, double vy, double mass, double radius) {
         this.number = number;
         this.mass = mass;
         this.coordinate = new Vector2(x, y);
@@ -47,10 +45,14 @@ public class Entity {
         this.desireDirection = this.velocity.toNormal();
     }
 
-    public Entity(Entity entity) {
-        this.number = entity.getNumber();
-        this.mass = entity.getMass();
-        this.radius = entity.getRadius();
+    protected Entity(Entity other) {
+        this.number = other.number;
+        this.mass = other.mass;
+        this.coordinate = other.coordinate;
+        this.desireDirection = other.desireDirection;
+        this.scape = other.scape;
+        this.velocity = other.velocity;
+        this.radius = other.radius;
     }
 
     public void setDesireDirection(Vector2 direction) {
@@ -126,6 +128,12 @@ public class Entity {
         return this.coordinate.distance(entity.coordinate);
     }
 
+    public Vector2 getDirectionTo(Entity entity) {
+        Vector2 resp = this.coordinate.clone();
+        resp.sub(entity.coordinate);
+        return resp;
+    }
+
     public double getDistanceTo(Vector2 other) {
         return Math.max(0, this.coordinate.distance(other));
     }
@@ -151,9 +159,7 @@ public class Entity {
         if (getClass() != obj.getClass())
             return false;
         Entity other = (Entity) obj;
-        if (number != other.getNumber())
-            return false;
-        return true;
+        return number == other.getNumber();
     }
 
 }
