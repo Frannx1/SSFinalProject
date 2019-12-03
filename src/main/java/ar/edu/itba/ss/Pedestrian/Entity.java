@@ -8,26 +8,31 @@ public abstract class Entity {
     private double radius;
     private Vector2 coordinate;
     private Vector2 velocity;
-    private boolean scape;
     private Vector2 desireDirection;
-
+    private double maxDisplacementMaginutd;
+    private double escapeMagnitud;
+    private double minRadius;
+    private double maxRadius;
+    private double beta;
     // TODO: this should not exist
     public static  double MAX_RADIUS = 0.37;
     public static  double MIN_RADIUS = 0.10;
     public static final double MASS = 0.1;
     public static final double MAX_SPEED = 0.95;
     public static final double SCAPE_SPEED = 0.95;
+    public static final double THAO = 0.5;
 
+    @Deprecated
     protected Entity(double x, double y, int number, double velocity, double angle, double mass, double radius) {
         this.number = number;
         this.mass = mass;
         this.coordinate = new Vector2(x, y);
         this.desireDirection = new Vector2(Math.cos(angle) * velocity, Math.sin(angle) * velocity);
-        this.scape = false;
         this.velocity = new Vector2();
         this.radius = radius;
     }
 
+    @Deprecated
     protected Entity(int number, double x, double y, double vx, double vy, double mass) {
         this.number = number;
         this.mass = mass;
@@ -36,6 +41,7 @@ public abstract class Entity {
         this.desireDirection = new Vector2(vx, vy).toNormal();
     }
 
+    @Deprecated
     protected Entity(int number, double x, double y, double vx, double vy, double mass, double radius) {
         this.number = number;
         this.mass = mass;
@@ -45,14 +51,32 @@ public abstract class Entity {
         this.desireDirection = this.velocity.toNormal();
     }
 
+    // Estas son las unicas a usar
+
     protected Entity(Entity other) {
         this.number = other.number;
         this.mass = other.mass;
-        this.coordinate = other.coordinate;
-        this.desireDirection = other.desireDirection;
-        this.scape = other.scape;
-        this.velocity = other.velocity;
+        this.coordinate = other.coordinate.clone();
         this.radius = other.radius;
+        this.minRadius = other.minRadius;
+        this.maxRadius = other.maxRadius;
+        this.escapeMagnitud = other.escapeMagnitud;
+        this.maxDisplacementMaginutd = other.maxDisplacementMaginutd;
+        this.velocity = other.velocity;
+    }
+
+    protected Entity(int number, double x, double y, double maxDisplacementMaginutd, double escapeMagnitud,
+                     double maxRadius, double minRadius, double mass, double beta) {
+        this.number = number;
+        this.radius = maxRadius;
+        this.coordinate = new Vector2(x, y);
+        this.escapeMagnitud = escapeMagnitud;
+        this.maxDisplacementMaginutd = maxDisplacementMaginutd;
+        this.minRadius = minRadius;
+        this.maxRadius = maxRadius;
+        this.mass = mass;
+        this.beta = beta;
+        this.velocity = new Vector2();
     }
 
     public void setDesireDirection(Vector2 direction) {
@@ -108,15 +132,6 @@ public abstract class Entity {
 
     public void resetVelocity() {
         this.velocity = this.desireDirection;
-        this.scape = true;
-    }
-
-    public boolean isScape() {
-        return this.scape;
-    }
-
-    public void setScape(boolean scape) {
-        this.scape = scape;
     }
 
     @Override
@@ -131,7 +146,7 @@ public abstract class Entity {
     public Vector2 getDirectionTo(Entity entity) {
         Vector2 resp = this.coordinate.clone();
         resp.sub(entity.coordinate);
-        return resp;
+        return resp.toNormal();
     }
 
     public double getDistanceTo(Vector2 other) {
@@ -140,6 +155,43 @@ public abstract class Entity {
 
     public double getVelocityModule() {
         return this.velocity.magnitude();
+    }
+
+    public double getMaxDisplacementMaginutd() {
+        return maxDisplacementMaginutd;
+    }
+
+    public void setMaxDisplacementMaginutd(double maxDisplacementMaginutd) {
+        this.maxDisplacementMaginutd = maxDisplacementMaginutd;
+    }
+
+    public double getEscapeMagnitud() {
+        return escapeMagnitud;
+    }
+
+    public void setEscapeMagnitud(double escapeMagnitud) {
+        this.escapeMagnitud = escapeMagnitud;
+    }
+
+    public double getMinRadius() {
+        return minRadius;
+    }
+
+    public void setMinRadius(double minRadius) {
+        this.minRadius = minRadius;
+    }
+
+    public double getMaxRadius() {
+        return maxRadius;
+    }
+
+    public void setMaxRadius(double maxRadius) {
+        this.maxRadius = maxRadius;
+    }
+
+    public double getDisplacementMagnitud() {
+        // as seen on the paper
+        return maxDisplacementMaginutd * Math.pow((radius - minRadius) / (maxRadius - minRadius), beta);
     }
 
     @Override

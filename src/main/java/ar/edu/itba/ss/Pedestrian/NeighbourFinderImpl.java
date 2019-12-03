@@ -16,6 +16,10 @@ public class NeighbourFinderImpl implements NeighbourFinder {
         return p1.getDistanceTo(p2) <= (p1.getRadius() + p2.getRadius());
     }
 
+    public static boolean isNear(Entity p1, Entity p2, double visibleRadius) {
+        return p1.getDistanceTo(p2) <= (p1.getRadius() + p2.getRadius() + visibleRadius);
+    }
+
     public static boolean inContact(Entity p1, Entity p2) {
         return p1.getDistanceTo(p2) <= (p1.getRadius() + p2.getRadius());
     }

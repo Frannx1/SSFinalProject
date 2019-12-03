@@ -1,6 +1,8 @@
 package ar.edu.itba.ss.Interface;
 
-public interface State<T> {
+import java.util.List;
+
+public interface State<T> extends Persistable<State<T>> {
 
     /**
      * A State contains the information of the environment
@@ -9,7 +11,14 @@ public interface State<T> {
      *
      */
 
-    boolean update(T member);
+    State<T> update(T member, double deltaT, Environment environment);
+
+    State<T> removeMember(T member);
+
+    State<T> addMember(T member);
+
+    List<T> getMemebers();
+
 
 }
 

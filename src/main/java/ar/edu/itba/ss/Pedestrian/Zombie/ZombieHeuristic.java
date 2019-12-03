@@ -1,8 +1,13 @@
 package ar.edu.itba.ss.Pedestrian.Zombie;
 
+import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.Heuristic;
+import ar.edu.itba.ss.Pedestrian.Entity;
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector2;
+
+import java.util.List;
+import java.util.Random;
 
 public class ZombieHeuristic implements Heuristic<Zombie> {
 
@@ -12,7 +17,7 @@ public class ZombieHeuristic implements Heuristic<Zombie> {
     private Vector2 randomMove;
 
     @Override
-    public AVector directionToTargetFrom(Zombie zombie) {
+    public AVector directionToTargetFrom(Zombie zombie, Environment environment) {
         if (zombie.getTarget().isPresent())
             return zombie.getDirectionTo(zombie.getTarget().get());
         else
@@ -26,7 +31,8 @@ public class ZombieHeuristic implements Heuristic<Zombie> {
             randomMove = new Vector2(Math.random(), Math.random());
         }
 
-        return randomMove;
+        return new Vector2(Math.random() * Math.pow(-1, new Random().nextInt()),
+                Math.random()* Math.pow(-1, new Random().nextInt()));
     }
 
 

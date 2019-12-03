@@ -18,7 +18,7 @@ public class Environmentold {
      * This class represents the circular path in which all entities float
      * for the sake of complexity we'll think of it as a straight line with periodic contour.
      */
-
+/*
     private double width;
     private double length;
 
@@ -78,13 +78,13 @@ public class Environmentold {
     }
 
     public void simulate(long simulationTime) {
-        /**
+
          * pseudo code:
          *  - calculate current time position.
          *  -   if two entities are touching, repel themselves with scape velocity.
          *      Bring their radius to the minimum.
          *  - continue their natural trend to move forward (apply moving force).
-         */
+
 
         StringBuffer buffer = new StringBuffer();
         buffer.append(entities.size());
@@ -214,15 +214,15 @@ public class Environmentold {
     private List<Entity> addWalls(Entity entity) {
         Vector2 coordinates = entity.getCoordinate();
         List<Entity> wallEntities = new ArrayList<>();
-        if (coordinates.x  <= entity.getRadius()) {
-            wallEntities
-                    .add(new Entity(-1, 0 ,coordinates.y, 0.0, 0.0, 0.0, 0));
-        } else if (coordinates.x  + entity.getRadius() >= width) {
-            wallEntities
-                    .add(new Entity(-1, width ,coordinates.y, 0.0, 0.0, 0.0, 0));
-        }
+//        if (coordinates.x  <= entity.getRadius()) {
+//            wallEntities
+//                    .add(new Entity(-1, 0 ,coordinates.y, 0.0, 0.0, 0.0, 0));
+//        } else if (coordinates.x  + entity.getRadius() >= width) {
+//            wallEntities
+//                    .add(new Entity(-1, width ,coordinates.y, 0.0, 0.0, 0.0, 0));
+//        }
         return wallEntities;
     }
-
+*/
 }
 

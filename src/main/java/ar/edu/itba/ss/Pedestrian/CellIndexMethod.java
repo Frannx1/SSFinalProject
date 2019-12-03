@@ -43,24 +43,24 @@ public class CellIndexMethod {
         }
     }
 
-    public LinkedList<Entity> superPositionWithOneParticle(double x, double y){
-        Entity entity = new Entity(x, y, -1, 0, 0, 0, 0);
-        int row = (int)Math.floor(y / cellSize);
-        int col = (int)Math.floor(x / cellSize);
-        LinkedList<Entity> ret = new LinkedList<>();
-        for(int i = row-1; i <= row+1 && i < l/cellSize; i++){
-            for(int j = col-1; j <= col+1 && j < l/cellSize; j++){
-                if(row + i >= 0 && col + j >= 0 && cells.get(j + (int)(l/cellSize * i)) != null){
-                    for(int p : cells.get(j + (int)(l/cellSize * i) )){
-                        if(neighbourFinder.areNeighbours(entity, entities[p])){
-                            ret.add(entities[p]);
-                        }
-                    }
-                }
-            }
-        }
-        return ret;
-    }
+//    public LinkedList<Entity> superPositionWithOneParticle(double x, double y){
+//        Entity entity = new Entity(x, y, -1, 0, 0, 0, 0);
+//        int row = (int)Math.floor(y / cellSize);
+//        int col = (int)Math.floor(x / cellSize);
+//        LinkedList<Entity> ret = new LinkedList<>();
+//        for(int i = row-1; i <= row+1 && i < l/cellSize; i++){
+//            for(int j = col-1; j <= col+1 && j < l/cellSize; j++){
+//                if(row + i >= 0 && col + j >= 0 && cells.get(j + (int)(l/cellSize * i)) != null){
+//                    for(int p : cells.get(j + (int)(l/cellSize * i) )){
+//                        if(neighbourFinder.areNeighbours(entity, entities[p])){
+//                            ret.add(entities[p]);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return ret;
+//    }
 
     public LinkedList<Entity> getNeighbours(int number){
         LinkedList<Entity> ret = new LinkedList<>();
