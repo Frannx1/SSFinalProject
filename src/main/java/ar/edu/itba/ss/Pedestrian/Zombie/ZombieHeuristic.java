@@ -2,11 +2,9 @@ package ar.edu.itba.ss.Pedestrian.Zombie;
 
 import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.Heuristic;
-import ar.edu.itba.ss.Pedestrian.Entity;
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector2;
 
-import java.util.List;
 import java.util.Random;
 
 public class ZombieHeuristic implements Heuristic<Zombie> {
@@ -28,12 +26,11 @@ public class ZombieHeuristic implements Heuristic<Zombie> {
         //TODO: ver si choco pared?
         if (duration % maxDurations == 0) {
             duration++;
-            randomMove = new Vector2(Math.random(), Math.random());
+            randomMove = new Vector2(Math.random() * Math.pow(-1, new Random().nextInt()),
+                    Math.random()* Math.pow(-1, new Random().nextInt()));
         }
 
-        return new Vector2(Math.random() * Math.pow(-1, new Random().nextInt()),
-                Math.random()* Math.pow(-1, new Random().nextInt()));
+        return randomMove;
     }
-
 
 }
