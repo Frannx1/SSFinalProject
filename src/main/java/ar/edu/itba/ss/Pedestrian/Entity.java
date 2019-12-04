@@ -144,8 +144,8 @@ public abstract class Entity {
     }
 
     public Vector2 getDirectionTo(Entity entity) {
-        Vector2 resp = this.coordinate.clone();
-        resp.sub(entity.coordinate);
+        Vector2 resp = entity.coordinate.clone();
+        resp.sub(this.coordinate);
         return resp.toNormal();
     }
 

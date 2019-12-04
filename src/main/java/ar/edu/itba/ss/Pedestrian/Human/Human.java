@@ -20,6 +20,7 @@ public class Human extends Pedestrian {
      */
 
     private HumanHeuristic heuristic;
+
     private boolean infected;
 
     public Human(double x, double y, int number, double velocity, double angle, double mass, double radius) {
@@ -92,6 +93,7 @@ public class Human extends Pedestrian {
         this.heuristic = (HumanHeuristic) heuristic;
     }
 
+    @Deprecated
     public boolean wasBitten(List<Entity> neighbours) {
         for(Entity p : neighbours) {
             boolean contact = NeighbourFinderImpl.inContact(this, p);
@@ -100,6 +102,18 @@ public class Human extends Pedestrian {
                 return true;
         }
         return false;
+    }
+
+    public void bite() {
+        infected = true;
+    }
+
+    public boolean wasBitten() {
+        return infected;
+    }
+
+    public boolean hasArrived(Environment environment) {
+        return environment.getFinalGoal().distance(getCoordinate()) <= getRadius();
     }
 
     @Override

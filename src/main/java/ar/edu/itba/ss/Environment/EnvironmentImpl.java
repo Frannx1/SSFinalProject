@@ -98,7 +98,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
         // aca tenemos que tener en cuenta que si es un humano y lo mordieron ... hay que sacarlo y tranformarlo
         if((state = state.update(member, deltaT, this)) != null
                 &&  (member instanceof Human)
-                && ((Human) member).wasBitten(this.getNeighbours(member))) {
+                && ((Human) member).wasBitten()) {
             Zombie zombie = ((Human) member).transform();
             state = state.removeMember(member);
             state = state.addMember(zombie);

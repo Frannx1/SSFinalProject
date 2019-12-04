@@ -25,13 +25,13 @@ public class App {
     static double scapeCenter = height /2;
     static double entranceCenter = scapeCenter;
     static double mass = 58;
-    static double visualField = 3;
+    static double visualField = 10;
     static double minRadius = 0.1;
     static double maxRadius = 0.3;
 
     // first we create the pedestrians
-    static int humanPopulation = 1;
-    static int zombiePopulation = 1;
+    static int humanPopulation = 10;
+    static int zombiePopulation = 3;
 
     public static void main(String[] args) {
 
@@ -51,22 +51,45 @@ public class App {
 
     private static void addHumans(List<Pedestrian> pedestrians, Environment environment, int size) {
         for (int i = 0; i < size; i++) {
-            Human human = new Human(pedestrians.size(), ((Vector2)environment.getStartingPoint()).x,
-                    ((Vector2)environment.getStartingPoint()).y, zombieDisplacementMagnitud, escapeMagnitud, maxRadius,
-                    minRadius, mass, beta, visualField);
-            human.setHeuristic(new Simple());
-            pedestrians.add(human);
+            boolean inserted = false;
+            System.out.println((i + 1) + " humans created");
+            while(!inserted) {
+                double yPosition = Math.random() * environment.getHeight();
+                Human human = new Human(pedestrians.size(), ((Vector2) environment.getStartingPoint()).x,
+                        yPosition, maxDisplacementVelocity, escapeMagnitud, maxRadius,
+                        minRadius, mass, beta, visualField);
+                human.setHeuristic(new Simple());
+                if(!isCollition(human, pedestrians)) {
+                    pedestrians.add(human);
+                    inserted = true;
+                }
+            }
         }
 
     }
 
     private static void addZombies(List<Pedestrian> pedestrians, Environment environment, int size) {
         for (int i = 0; i < size; i++) {
-            Zombie zombie = new Zombie(pedestrians.size(), ((Vector2)environment.getFinalGoal()).x,
-                    ((Vector2)environment.getFinalGoal()).y, maxDisplacementVelocity, escapeMagnitud, maxRadius,
-                    minRadius, mass, beta, visualField);
-            zombie.setHeuristic(new ZombieHeuristic());
-            pedestrians.add(zombie);
+            System.out.println((i + 1) + " zombies created");
+            boolean inserted = false;
+            while(!inserted) {
+                double yPosition = Math.random() * environment.getHeight();
+                Zombie zombie = new Zombie(pedestrians.size(), ((Vector2) environment.getFinalGoal()).x,
+                        yPosition, zombieDisplacementMagnitud, escapeMagnitud, maxRadius,
+                        minRadius, mass, beta, visualField);
+                zombie.setHeuristic(new ZombieHeuristic());
+                if(!isCollition(zombie, pedestrians)) {
+                    pedestrians.add(zombie);
+                    inserted = true;
+                }
+            }
         }
+    }
+
+
+    private static boolean isCollition(Pedestrian newPedestrian, List<Pedestrian> currentPedestrians) {
+        return currentPedestrians.stream()
+                .anyMatch(pedestrian ->
+                        pedestrian.getDistanceTo(newPedestrian) <= pedestrian.getRadius() + newPedestrian.getRadius());
     }
 }

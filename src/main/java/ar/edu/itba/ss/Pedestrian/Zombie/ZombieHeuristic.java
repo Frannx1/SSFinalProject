@@ -25,11 +25,10 @@ public class ZombieHeuristic implements Heuristic<Zombie> {
     private AVector randomMoveWithDuration() {
         //TODO: ver si choco pared?
         if (duration % maxDurations == 0) {
-            duration++;
             randomMove = new Vector2(Math.random() * Math.pow(-1, new Random().nextInt()),
                     Math.random()* Math.pow(-1, new Random().nextInt()));
         }
-
+        duration++;
         return randomMove;
     }
 

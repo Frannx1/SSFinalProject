@@ -15,8 +15,8 @@ import java.util.Optional;
 public class Zombie extends Pedestrian {
 
     private ZombieHeuristic heuristic;
-    private Optional<Human> target;
 
+    private Optional<Human> target;
 
     public Zombie(double x, double y, int number, double velocity, double angle, double mass, double radius) {
         super(number, x, y, velocity, angle, mass, radius);
@@ -79,9 +79,11 @@ public class Zombie extends Pedestrian {
         return this.heuristic.directionToTargetFrom(this, environment);
     }
 
-    public Zombie infect(Human human) {
+    public boolean infect(Human human) {
         //TODO: notar que el humano sigue existiendo.
-        return human.transform();
+        setTarget(null);
+        human.bite();
+        return true;
     }
 
     @Override
@@ -103,8 +105,20 @@ public class Zombie extends Pedestrian {
     }
 
     private void checkForHuman(Zombie zombie, Environment environment) {
+        List<Entity> neighbours = environment.getEnvironmentState().getMemebers();
+        if(target.isPresent()) {
+            neighbours.stream()
+                    .filter(neighbour -> neighbour.equals(target.get())).findAny()
+                    .ifPresent(human -> {
+                        if(NeighbourFinderImpl.inContact(human, this))
+                            infect((Human)human);
+                        else
+                            // we update our reference
+                            setTarget((Human) human);
+                    });
+            return;
+        }
 
-        List<Entity> neighbours = environment.getNeighbours(this);
         for(Entity e : neighbours) {
             boolean visible = NeighbourFinderImpl.isNear(this, e, visualField);
             if (visible && ( e instanceof Human)) {

@@ -27,11 +27,12 @@ public class StateImpl implements State<Pedestrian> {
 
     @Override
     public State<Pedestrian> update(Pedestrian member, double deltaT, Environment environment) {
-
-        Pedestrian newMember = member.updatePosition(deltaT, environment)
-                .updateVelocity(deltaT, environment);
         this.members.remove(member);
-        this.members.add(newMember);
+        if(!(member instanceof Human) || !((Human) member).hasArrived(environment) ) {
+            Pedestrian newMember = member.updatePosition(deltaT, environment)
+                    .updateVelocity(deltaT, environment);
+            this.members.add(newMember);
+        }
         return new StateImpl(new ArrayList<>(this.members));
     }
 
