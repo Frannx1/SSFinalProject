@@ -113,14 +113,16 @@ public class Human extends Pedestrian {
     }
 
     public boolean hasArrived(Environment environment) {
-        return environment.getFinalGoal().distance(getCoordinate()) <= getRadius();
+        double bufferZone = getRadius() + environment.getFinalGoalRadius();
+        boolean resp = environment.getFinalGoal().distance(getCoordinate()) <= bufferZone;
+        return resp;
     }
 
     @Override
     public String toString() {
         return getNumber() + " " + getCoordinate().x + " " +
                 getCoordinate().y + " " + getVelocity().x + " " +
-                getVelocity().y + " " +getRadius() + " " + getMass() + " true";
+                getVelocity().y + " " +getRadius() + " " + getMass() + " 0.5";
     }
 
 }

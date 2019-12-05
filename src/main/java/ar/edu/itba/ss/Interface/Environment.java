@@ -16,7 +16,7 @@ public interface Environment<T> {
 
     void updateMemberState(T member, double deltaT);
 
-    State getEnvironmentState();
+    State<T> getEnvironmentState();
 
     void setEnvironmentState(State<T> state);
 
@@ -33,6 +33,8 @@ public interface Environment<T> {
     AVector getStartingPoint();
 
     AVector getFinalGoal();
+
+    double getFinalGoalRadius();
 
     CellIndexMethod getCim();
 

@@ -6,7 +6,7 @@ import mikera.vectorz.AVector;
 import mikera.vectorz.Vector2;
 
 
-public class Simple extends HumanHeuristic {
+public class RamboHeuristic extends HumanHeuristic {
     /**
      * This implementation was meant for testing purposes only
      */

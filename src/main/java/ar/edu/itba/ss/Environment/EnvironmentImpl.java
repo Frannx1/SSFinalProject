@@ -31,16 +31,19 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
 
     private double simulatedTime;
 
+    private double goalRadius;
+
     public EnvironmentImpl() { }
 
     public EnvironmentImpl(double width, double height, double scapeCenter,
-                           double entranceCenter, List<Pedestrian> pedestrians) {
+                           double entranceCenter, double goalRadius, List<Pedestrian> pedestrians) {
         this.width = width;
         this.height = height;
         this.scapeCenter = scapeCenter;
         this.entranceCenter = entranceCenter;
         this.simulatedTime = 0;
         this.state = new StateImpl(pedestrians);
+        this.goalRadius = goalRadius;
     }
 
     @Override
@@ -129,6 +132,11 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     }
 
     @Override
+    public double getFinalGoalRadius() {
+        return goalRadius;
+    }
+
+    @Override
     public CellIndexMethod getCim() {
         return cim;
     }
@@ -147,7 +155,6 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     public double getHeight() {
         return height;
     }
-
 
     private List<Entity> addWalls(Entity entity) {
         Vector2 coordinates = entity.getCoordinate();

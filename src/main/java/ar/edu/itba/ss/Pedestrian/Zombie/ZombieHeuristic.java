@@ -10,7 +10,7 @@ import java.util.Random;
 public class ZombieHeuristic implements Heuristic<Zombie> {
 
     //TODO: esto va a depender del delta_t, podemos llevarlo a zombie.
-    private static long maxDurations = 40;
+    private static long maxDurations = 10;
     private long duration = 0;
     private Vector2 randomMove;
 

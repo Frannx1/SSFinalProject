@@ -42,6 +42,7 @@ public class Zombie extends Pedestrian {
         super(other);
         this.heuristic = new ZombieHeuristic();
         this.target = Optional.empty();
+        setMaxDisplacementMaginutd(this.getMaxDisplacementMaginutd());
     }
 
     public Zombie(Zombie other) {
@@ -54,8 +55,6 @@ public class Zombie extends Pedestrian {
     public Pedestrian updatePosition(double deltaT, Environment environment) {
         // el cambio de posicion viene dado por la suma vectorial
         // new position = old position + velocidad * delta T
-        if(getVelocity() == null)
-            System.out.println("aca");
         Vector2 velocityComponent = getVelocity().clone();
         velocityComponent.multiply(deltaT);
         Vector2 newPosition = getCoordinate();
@@ -107,23 +106,28 @@ public class Zombie extends Pedestrian {
     private void checkForHuman(Zombie zombie, Environment environment) {
         List<Entity> neighbours = environment.getEnvironmentState().getMemebers();
         if(target.isPresent()) {
-            neighbours.stream()
-                    .filter(neighbour -> neighbour.equals(target.get())).findAny()
-                    .ifPresent(human -> {
-                        if(NeighbourFinderImpl.inContact(human, this))
-                            infect((Human)human);
-                        else
-                            // we update our reference
-                            setTarget((Human) human);
-                    });
-            return;
-        }
+            Optional<Entity> humanOptiona = neighbours.stream()
+                    .filter(neighbour -> neighbour.equals(target.get())).findAny();
 
-        for(Entity e : neighbours) {
-            boolean visible = NeighbourFinderImpl.isNear(this, e, visualField);
-            if (visible && ( e instanceof Human)) {
-                setTarget((Human)e);
-                return;
+            if(humanOptiona.isPresent()) {
+                Entity human = humanOptiona.get();
+                if (NeighbourFinderImpl.inContact(human, this))
+                    infect((Human) human);
+                else
+                    // we update our reference
+                    setTarget((Human) human);
+            } else {
+                setTarget(null);
+            }
+
+
+        } else {
+            for (Entity e : neighbours) {
+                boolean visible = NeighbourFinderImpl.isNear(this, e, visualField);
+                if (visible && (e instanceof Human)) {
+                    setTarget((Human) e);
+                    return;
+                }
             }
         }
     }
@@ -132,7 +136,7 @@ public class Zombie extends Pedestrian {
     public String toString() {
         return getNumber() + " " + getCoordinate().x + " " +
                 getCoordinate().y + " " + getVelocity().x + " " +
-                getVelocity().y + " " + getRadius() + " " + getMass() + " false";
+                getVelocity().y + " " + getRadius() + " " + getMass() + " 1";
     }
 }
 

@@ -3,7 +3,8 @@ package ar.edu.itba.ss;
 import ar.edu.itba.ss.Environment.EnvironmentImpl;
 import ar.edu.itba.ss.Environment.StateImpl;
 import ar.edu.itba.ss.Interface.Environment;
-import ar.edu.itba.ss.Pedestrian.Human.Heuristic.Simple;
+import ar.edu.itba.ss.Pedestrian.Human.Heuristic.ExponentialHeuristic;
+import ar.edu.itba.ss.Pedestrian.Human.Heuristic.RamboHeuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import ar.edu.itba.ss.Pedestrian.Zombie.Zombie;
@@ -20,14 +21,15 @@ public class App {
     static double deltaT = 0.1;
     static double beta = 0.9;
     static double maxDisplacementVelocity = 1.5;
-    static double escapeMagnitud = 1.5;
-    static double zombieDisplacementMagnitud = 0.5;
+    static double escapeMagnitud = 5;
+    static double zombieDisplacementMagnitud = 1.0;
     static double scapeCenter = height /2;
     static double entranceCenter = scapeCenter;
     static double mass = 58;
     static double visualField = 10;
     static double minRadius = 0.1;
     static double maxRadius = 0.3;
+    static double goalRadius = 0.5;
 
     // first we create the pedestrians
     static int humanPopulation = 10;
@@ -36,7 +38,7 @@ public class App {
     public static void main(String[] args) {
 
         Environment<Pedestrian> environment = new EnvironmentImpl(width, height, scapeCenter,
-                entranceCenter, null);
+                entranceCenter, goalRadius, null);
 
         List<Pedestrian> pedestrians = new ArrayList<>();
         addHumans(pedestrians, environment, humanPopulation);
@@ -56,9 +58,9 @@ public class App {
             while(!inserted) {
                 double yPosition = Math.random() * environment.getHeight();
                 Human human = new Human(pedestrians.size(), ((Vector2) environment.getStartingPoint()).x,
-                        yPosition, maxDisplacementVelocity, escapeMagnitud, maxRadius,
+                        yPosition, maxDisplacementVelocity , escapeMagnitud, maxRadius,
                         minRadius, mass, beta, visualField);
-                human.setHeuristic(new Simple());
+                human.setHeuristic(new ExponentialHeuristic());
                 if(!isCollition(human, pedestrians)) {
                     pedestrians.add(human);
                     inserted = true;
@@ -85,7 +87,6 @@ public class App {
             }
         }
     }
-
 
     private static boolean isCollition(Pedestrian newPedestrian, List<Pedestrian> currentPedestrians) {
         return currentPedestrians.stream()
