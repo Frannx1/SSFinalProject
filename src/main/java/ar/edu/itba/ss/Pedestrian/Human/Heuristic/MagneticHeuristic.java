@@ -15,7 +15,6 @@ public class MagneticHeuristic extends HumanHeuristic {
      * But zombies (as electrons of same charge) lay an magnetic field which repels human in the y direction.
      */
 
-
     @Override
     public AVector directionToTargetFrom(Human human, Environment environment) {
         Vector2 distanceToGoal = getDistanceToGoal(human, environment);
@@ -24,12 +23,10 @@ public class MagneticHeuristic extends HumanHeuristic {
         List<Vector2> zombies = getAllZombiesVector(human, environment);
 
         zombies.stream().forEach(zombie -> {
-            zombie.multiply(1 / zombie.magnitude());
+            zombie.multiply(Math.exp(- 3 * zombie.magnitude()));
             distanceToGoal.sub(zombie);
         });
         return distanceToGoal.toNormal();
     }
-
-
 
 }

@@ -18,11 +18,11 @@ public class StateImpl implements State<Pedestrian> {
      *
      */
 
-    private List<Pedestrian> members;
+    private Set<Pedestrian> members;
 
-    public StateImpl(List<Pedestrian> members) {
+    public StateImpl(Set<Pedestrian> members) {
         if(members!= null)
-            this.members = Collections.synchronizedList(members);
+            this.members = Collections.synchronizedSet(members);
     }
 
     @Override
@@ -33,25 +33,25 @@ public class StateImpl implements State<Pedestrian> {
                     .updateVelocity(deltaT, environment);
             this.members.add(newMember);
         }
-        return new StateImpl(new ArrayList<>(this.members));
+        return new StateImpl(new HashSet<>(this.members));
     }
 
     @Override
     public State<Pedestrian> removeMember(Pedestrian member) {
         this.members.remove(member);
-        return new StateImpl(new ArrayList<>(this.members));
+        return new StateImpl(new HashSet<>(this.members));
     }
 
     @Override
     public State<Pedestrian> addMember(Pedestrian member) {
 
         this.members.add(member);
-        return new StateImpl(new ArrayList<>(this.members));
+        return new StateImpl(new HashSet<>(this.members));
     }
 
     @Override
     public List<Pedestrian> getMemebers() {
-        return members;
+        return new ArrayList<>(members);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class StateImpl implements State<Pedestrian> {
         // this will not support a series of states
 
         String[] lines = buffer.toString().split("\n");
-        List<Pedestrian> pedestrians = Arrays.stream(lines).map(str -> {
+        Set<Pedestrian> pedestrians = Arrays.stream(lines).map(str -> {
             Scanner scanner = new Scanner(str);
             int number = scanner.nextInt();
             double x = scanner.nextDouble();
@@ -83,7 +83,7 @@ public class StateImpl implements State<Pedestrian> {
                 return new Human(number, x, y, vx, vy, mass);
             else
                 return new Zombie(number, x, y, vx, vy, mass);
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
 
         return new StateImpl(pedestrians);
     }

@@ -14,6 +14,7 @@ import mikera.vectorz.Vector2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class EnvironmentImpl implements Environment<Pedestrian> {
 
@@ -36,7 +37,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     public EnvironmentImpl() { }
 
     public EnvironmentImpl(double width, double height, double scapeCenter,
-                           double entranceCenter, double goalRadius, List<Pedestrian> pedestrians) {
+                           double entranceCenter, double goalRadius, Set<Pedestrian> pedestrians) {
         this.width = width;
         this.height = height;
         this.scapeCenter = scapeCenter;
@@ -88,11 +89,11 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
         // move forward the simulation by one time step
         List<Pedestrian> pedestrians = Collections.synchronizedList(state.getMemebers());
 //                .stream().forEach(pedestrian -> updateMemberState(pedestrian, deltaT));
-
-        for (int i = 0; i < pedestrians.size(); i++) {
-            updateMemberState(pedestrians.get(i), deltaT);
+        synchronized (pedestrians) {
+            for (int i = 0; i < pedestrians.size(); i++) {
+                updateMemberState(pedestrians.get(i), deltaT);
+            }
         }
-
         simulatedTime += deltaT;
     }
 

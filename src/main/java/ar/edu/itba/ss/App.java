@@ -12,7 +12,9 @@ import ar.edu.itba.ss.Pedestrian.Zombie.ZombieHeuristic;
 import mikera.vectorz.Vector2;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class App {
     static double width = 15;
@@ -40,7 +42,7 @@ public class App {
         Environment<Pedestrian> environment = new EnvironmentImpl(width, height, scapeCenter,
                 entranceCenter, goalRadius, null);
 
-        List<Pedestrian> pedestrians = new ArrayList<>();
+        Set<Pedestrian> pedestrians = new HashSet<>();
         addHumans(pedestrians, environment, humanPopulation);
         addZombies(pedestrians, environment, zombiePopulation);
         environment.setEnvironmentState(new StateImpl(pedestrians));
@@ -51,7 +53,7 @@ public class App {
         System.out.println("simulation finished!");
     }
 
-    private static void addHumans(List<Pedestrian> pedestrians, Environment environment, int size) {
+    private static void addHumans(Set<Pedestrian> pedestrians, Environment environment, int size) {
         for (int i = 0; i < size; i++) {
             boolean inserted = false;
             System.out.println((i + 1) + " humans created");
@@ -70,7 +72,7 @@ public class App {
 
     }
 
-    private static void addZombies(List<Pedestrian> pedestrians, Environment environment, int size) {
+    private static void addZombies(Set<Pedestrian> pedestrians, Environment environment, int size) {
         for (int i = 0; i < size; i++) {
             System.out.println((i + 1) + " zombies created");
             boolean inserted = false;
@@ -88,7 +90,7 @@ public class App {
         }
     }
 
-    private static boolean isCollition(Pedestrian newPedestrian, List<Pedestrian> currentPedestrians) {
+    private static boolean isCollition(Pedestrian newPedestrian, Set<Pedestrian> currentPedestrians) {
         return currentPedestrians.stream()
                 .anyMatch(pedestrian ->
                         pedestrian.getDistanceTo(newPedestrian) <= pedestrian.getRadius() + newPedestrian.getRadius());
