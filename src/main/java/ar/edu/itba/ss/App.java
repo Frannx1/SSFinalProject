@@ -3,6 +3,7 @@ package ar.edu.itba.ss;
 import ar.edu.itba.ss.Environment.EnvironmentImpl;
 import ar.edu.itba.ss.Environment.StateImpl;
 import ar.edu.itba.ss.Interface.Environment;
+import ar.edu.itba.ss.Pedestrian.Human.Heuristic.FranHeuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Heuristic.MagneticHeuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Heuristic.RuledBaseHeuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
@@ -35,7 +36,7 @@ public class App {
 
     // first we create the pedestrians
     static int humanPopulation = 15;
-    static int zombiePopulation = 3;
+    static int zombiePopulation = 4;
 
     public static void main(String[] args) {
 
@@ -62,7 +63,7 @@ public class App {
                 Human human = new Human(pedestrians.size(), ((Vector2) environment.getStartingPoint()).x,
                         yPosition, maxDisplacementVelocity , escapeMagnitud, maxRadius,
                         minRadius, mass, beta, visualField);
-                human.setHeuristic(new MagneticHeuristic());
+                human.setHeuristic(new FranHeuristic());
                 if(!isCollition(human, pedestrians)) {
                     pedestrians.add(human);
                     inserted = true;

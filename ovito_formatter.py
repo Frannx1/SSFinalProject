@@ -5,13 +5,13 @@ from PyQt5.QtGui import *
 
 a1=1.51
 a2=1.51
-b1=19
+b1=90
 b2=90
 
 room_border_color = QColor(100,100,100)
-width = 15.0
-height = 15.0
-hole = 2.5
+width = 200.0
+height = 200.0
+hole = 50
 y1 = height/2 - hole/2
 y2 = height/2 + hole/2
 
