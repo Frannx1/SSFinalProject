@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class EnvironmentImpl implements Environment<Pedestrian> {
 
@@ -79,7 +80,12 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
 
     @Override
     public List<Entity> getNeighbours(Pedestrian member) {
-        List<Entity> neighbours = this.cim.getNeighbours(member.getNumber());
+        //List<Entity> neighbours = this.cim.getNeighbours(member.getNumber());
+        List<Entity> neighbours = new ArrayList<>();
+        List<Pedestrian> members = this.state.getMemebers().stream().filter(m -> member.isSameClass(m))
+                .collect(Collectors.toList());
+        members.remove(member);
+        neighbours.addAll(members);
         neighbours.addAll(addWalls(member));
         return neighbours;
     }

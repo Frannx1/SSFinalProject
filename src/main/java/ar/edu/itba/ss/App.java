@@ -4,16 +4,13 @@ import ar.edu.itba.ss.Environment.EnvironmentImpl;
 import ar.edu.itba.ss.Environment.StateImpl;
 import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Pedestrian.Human.Heuristic.MagneticHeuristic;
-import ar.edu.itba.ss.Pedestrian.Human.Heuristic.RuledBaseHeuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import ar.edu.itba.ss.Pedestrian.Zombie.Zombie;
 import ar.edu.itba.ss.Pedestrian.Zombie.ZombieHeuristic;
 import mikera.vectorz.Vector2;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class App {
@@ -24,13 +21,13 @@ public class App {
     static double beta = 0.9;
     static double maxDisplacementVelocity = 1.5;
     static double escapeMagnitud = 5;
-    static double zombieDisplacementMagnitud = 1.0;
+    static double zombieDisplacementMagnitud = 0.80;
     static double scapeCenter = height /2;
     static double entranceCenter = scapeCenter;
     static double mass = 58;
     static double visualField = 10;
     static double minRadius = 0.1;
-    static double maxRadius = 0.3;
+    static double maxRadius = 0.11;
     static double goalRadius = 0.5;
 
     // first we create the pedestrians

@@ -95,6 +95,11 @@ public class Zombie extends Pedestrian {
         this.heuristic = (ZombieHeuristic) heuristic;
     }
 
+    @Override
+    public boolean isSameClass(Pedestrian pedestrian) {
+        return (pedestrian instanceof Zombie);
+    }
+
     public Optional<Human> getTarget() {
         return target;
     }

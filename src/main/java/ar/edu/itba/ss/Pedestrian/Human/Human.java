@@ -93,6 +93,11 @@ public class Human extends Pedestrian {
         this.heuristic = (HumanHeuristic) heuristic;
     }
 
+    @Override
+    public boolean isSameClass(Pedestrian pedestrian) {
+        return pedestrian instanceof Human;
+    }
+
     @Deprecated
     public boolean wasBitten(List<Entity> neighbours) {
         for(Entity p : neighbours) {

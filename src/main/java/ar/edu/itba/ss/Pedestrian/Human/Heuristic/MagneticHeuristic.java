@@ -18,12 +18,12 @@ public class MagneticHeuristic extends HumanHeuristic {
     @Override
     public AVector directionToTargetFrom(Human human, Environment environment) {
         Vector2 distanceToGoal = getDistanceToGoal(human, environment);
-        distanceToGoal.multiply(Math.exp(distanceToGoal.magnitude()));
+        distanceToGoal.multiply(Math.exp(distanceToGoal.magnitude()) * 0.7);
 
         List<Vector2> zombies = getAllZombiesVector(human, environment);
 
         zombies.stream().forEach(zombie -> {
-            zombie.multiply(Math.exp(- 3 * zombie.magnitude()));
+            zombie.multiply(Math.exp(-zombie.magnitude() + 3) * 0.3);
             distanceToGoal.sub(zombie);
         });
         return distanceToGoal.toNormal();

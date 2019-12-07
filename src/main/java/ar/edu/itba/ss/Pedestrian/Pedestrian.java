@@ -102,5 +102,7 @@ public abstract class Pedestrian extends Entity {
     protected void setVisualField(double visualField) {
         this.visualField = visualField;
     }
+
+    public abstract boolean isSameClass(Pedestrian pedestrian);
 }
 
