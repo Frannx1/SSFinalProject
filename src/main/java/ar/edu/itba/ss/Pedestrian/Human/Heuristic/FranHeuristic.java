@@ -37,7 +37,7 @@ public class FranHeuristic extends HumanHeuristic {
         direction.multiply(1.5 * Math.exp(m));
 
         List<Vector2> zombiesDistanceVector = getAllZombiesVector(human, environment);
-        zombiesDistanceVector.sort((o1, o2) -> (int) ((int) o1.magnitude() - o2.magnitude()));
+        zombiesDistanceVector.sort(Comparator.comparingInt(o -> (int) o.magnitude()));
 
         List<Vector2> wallDistanceVector = environment.getDirectionsToWall(human);
 

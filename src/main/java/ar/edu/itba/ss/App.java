@@ -3,7 +3,9 @@ package ar.edu.itba.ss;
 import ar.edu.itba.ss.Environment.EnvironmentImpl;
 import ar.edu.itba.ss.Environment.StateImpl;
 import ar.edu.itba.ss.Interface.Environment;
+import ar.edu.itba.ss.Interface.Heuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Heuristic.FranHeuristic;
+import ar.edu.itba.ss.Pedestrian.Human.Heuristic.HumanHeuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Heuristic.MagneticHeuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.Pedestrian;
@@ -31,11 +33,19 @@ public class App {
     static double maxRadius = 0.11;
     static double goalRadius = 0.5;
 
+    // for vector field
+    static double separation = 0.5;
+    static int zombieRate = 20;
+
     // first we create the pedestrians
     static int humanPopulation = 15;
     static int zombiePopulation = 5;
 
     public static void main(String[] args) {
+        normal();
+    }
+
+    public static void normal() {
 
         Environment<Pedestrian> environment = new EnvironmentImpl(width, height, scapeCenter,
                 entranceCenter, goalRadius, null);
@@ -49,6 +59,42 @@ public class App {
         System.out.println("starting engine");
         engine.simulate();
         System.out.println("simulation finished!");
+    }
+
+    public static void vectorField() {
+
+        Environment<Pedestrian> environment = new EnvironmentImpl(width, height, scapeCenter,
+                entranceCenter, goalRadius, null);
+
+        Set<Pedestrian> pedestrians = new HashSet<>();
+        addPedestriansToVectorField(pedestrians, environment, separation, zombieRate);
+        environment.setEnvironmentState(new StateImpl(pedestrians));
+
+        SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, 2 * deltaT);
+        System.out.println("starting engine");
+        engine.simulate();
+        System.out.println("simulation finished!");
+    }
+
+    private static void addPedestriansToVectorField(Set<Pedestrian> pedestrians, Environment environment, double separation, int zombieRate) {
+        for (double x = separation/2; x < environment.getWidth() - separation/2; x += separation) {
+            for (double y = separation/2; y < environment.getWidth() - separation/2; y += separation) {
+                Pedestrian pedestrian;
+                Heuristic heuristic;
+                if (pedestrians.size() % zombieRate == 0 && Math.random() > 0.5) {
+                    pedestrian = new Zombie(pedestrians.size(), x, y, zombieDisplacementMagnitud, escapeMagnitud, maxRadius,
+                            minRadius, mass, beta, visualField);
+                    heuristic = new ZombieHeuristic();
+                } else {
+                    pedestrian = new Human(pedestrians.size(), x, y, maxDisplacementVelocity , escapeMagnitud, maxRadius,
+                            minRadius, mass, beta, visualField);
+                    //TODO: factory
+                    heuristic = new FranHeuristic();
+                }
+                pedestrian.setHeuristic(heuristic);
+                pedestrians.add(pedestrian);
+            }
+        }
     }
 
     private static void addHumans(Set<Pedestrian> pedestrians, Environment environment, int size) {
