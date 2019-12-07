@@ -14,8 +14,6 @@ public interface Environment<T> {
      *
      */
 
-    void updateMemberState(T member, double deltaT);
-
     State<T> getEnvironmentState();
 
     void setEnvironmentState(State<T> state);

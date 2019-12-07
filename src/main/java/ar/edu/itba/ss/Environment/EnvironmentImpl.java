@@ -4,10 +4,8 @@ import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.State;
 import ar.edu.itba.ss.Pedestrian.CellIndexMethod;
 import ar.edu.itba.ss.Pedestrian.Entity;
-import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import ar.edu.itba.ss.Pedestrian.Wall;
-import ar.edu.itba.ss.Pedestrian.Zombie.Zombie;
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector2;
 
@@ -46,11 +44,6 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
         this.simulatedTime = 0;
         this.state = new StateImpl(pedestrians);
         this.goalRadius = goalRadius;
-    }
-
-    @Override
-    public void updateMemberState(Pedestrian member, double deltaT) {
-
     }
 
     @Override
@@ -105,18 +98,6 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
         }
         simulatedTime += deltaT;
     }
-
-//    @Override
-//    public void updateMemberState(Pedestrian member, double deltaT) {
-//        // aca tenemos que tener en cuenta que si es un humano y lo mordieron ... hay que sacarlo y tranformarlo
-//        if((state = state.update(member, deltaT, this)) != null
-//                &&  (member instanceof Human)
-//                && ((Human) member).wasBitten()) {
-//            Zombie zombie = ((Human) member).transform();
-//            state = state.removeMember(member);
-//            state = state.addMember(zombie);
-//        }
-//    }
 
     @Override
     public boolean hasFinished(double simulationT) {
