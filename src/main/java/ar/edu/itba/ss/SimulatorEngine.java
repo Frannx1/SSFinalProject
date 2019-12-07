@@ -5,12 +5,11 @@ import ar.edu.itba.ss.Pedestrian.CellIndexMethod;
 import ar.edu.itba.ss.Pedestrian.Entity;
 import ar.edu.itba.ss.Pedestrian.NeighbourFinderImpl;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class SimulatorEngine<T> {
+public class SimulatorEngine<T extends Entity> {
 
     /**
      * This class keep iteration over the environment state
@@ -32,7 +31,7 @@ public class SimulatorEngine<T> {
         this.deltaT = deltaT;
         this.simulationTime = simulationTime;
         this.cim = new CellIndexMethod(1, Math.max(environment.getHeight(),
-                environment.getWidth()), (Entity[]) environment.getEnvironmentState().getMemebers().toArray(new Entity[] {}),
+                environment.getWidth()), (Entity[]) environment.getEnvironmentState().getMembers().toArray(new Entity[] {}),
                 new NeighbourFinderImpl(1));
         this.environment.setCim(this.cim);
         this.buffer = new StringBuffer();

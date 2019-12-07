@@ -33,7 +33,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
 
     private double goalRadius;
 
-    public EnvironmentImpl() { }
+    public EnvironmentImpl() {}
 
     public EnvironmentImpl(double width, double height, double scapeCenter,
                            double entranceCenter, double goalRadius, Set<Pedestrian> pedestrians) {
@@ -80,7 +80,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     public List<Entity> getNeighbours(Pedestrian member) {
         //List<Entity> neighbours = this.cim.getNeighbours(member.getNumber());
         List<Entity> neighbours = new ArrayList<>();
-        List<Pedestrian> members = this.state.getMemebers().stream().filter(m -> member.isSameClass(m))
+        List<Pedestrian> members = this.state.getMembers().stream().filter(m -> member.isSameClass(m))
                 .collect(Collectors.toList());
         members.remove(member);
         neighbours.addAll(members);
@@ -91,7 +91,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     @Override
     public void moveSimulation(double deltaT) {
         // move forward the simulation by one time step
-        List<Pedestrian> pedestrians = Collections.synchronizedList(state.getMemebers());
+        List<Pedestrian> pedestrians = Collections.synchronizedList(state.getMembers());
 //                .stream().forEach(pedestrian -> updateMemberState(pedestrian, deltaT));
         synchronized (pedestrians) {
                 state = state.update(deltaT, this);
@@ -158,13 +158,32 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
                     .add(new Wall(-1, width ,coordinates.y, 0.0, 0.0, 0.0, 0));
         } else if(coordinates.y <= entity.getRadius()) {
             wallEntities
-                    .add(new Wall(-1, coordinates.x , 0.0, 0.0, 0.0, 0.0, 0));
+                    .add(new Wall(-1, coordinates.x, 0.0, 0.0, 0.0, 0.0, 0));
         } else if(coordinates.y + entity.getRadius() >= height) {
             wallEntities
-                    .add(new Wall(-1, coordinates.x , height, 0.0, 0.0, 0.0, 0));
+                    .add(new Wall(-1, coordinates.x, height, 0.0, 0.0, 0.0, 0));
         }
 
         return wallEntities;
+    }
+
+    private List<Entity> getWallsNearest(Entity entity) {
+        Vector2 coordinates = entity.getCoordinate();
+        List<Entity> wallEntities = new ArrayList<>();
+        wallEntities.add(new Wall(-1, 0 ,coordinates.y, 0.0, 0.0, 0.0, 0));
+        wallEntities.add(new Wall(-1, coordinates.x, height, 0.0, 0.0, 0.0, 0));
+        wallEntities.add(new Wall(-1, coordinates.x, 0.0, 0.0, 0.0, 0.0, 0));
+
+        if (entity.getDistanceTo((Vector2) getFinalGoal()) >= 4 * getFinalGoalRadius())
+            wallEntities.add(new Wall(-1, width ,coordinates.y, 0.0, 0.0, 0.0, 0));
+
+        return wallEntities;
+    }
+
+    @Override
+    public List<Vector2> getDirectionsToWall(Pedestrian pedestrian) {
+        List<Entity> walls = getWallsNearest(pedestrian);
+        return walls.stream().map(pedestrian::getVectorTo).collect(Collectors.toList());
     }
 
 }

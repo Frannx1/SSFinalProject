@@ -143,12 +143,16 @@ public abstract class Entity {
         return this.coordinate.distance(entity.coordinate);
     }
 
-    public Vector2 getDirectionTo(Entity entity) {
+    public Vector2 getVectorTo(Entity entity) {
         Vector2 resp = entity.coordinate.clone();
         resp.sub(this.coordinate);
-        resp = resp.toNormal();
 
-        return resp == null? new Vector2() : resp;
+        return resp;
+    }
+
+    public Vector2 getDirectionTo(Entity entity) {
+        Vector2 vec = getVectorTo(entity).toNormal();
+        return vec == null? new Vector2() : vec;
     }
 
     public double getDistanceTo(Vector2 other) {

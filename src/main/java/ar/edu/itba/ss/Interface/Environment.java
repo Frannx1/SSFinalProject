@@ -2,13 +2,12 @@ package ar.edu.itba.ss.Interface;
 
 import ar.edu.itba.ss.Pedestrian.CellIndexMethod;
 import ar.edu.itba.ss.Pedestrian.Entity;
-import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector2;
 
 import java.util.List;
 
-public interface Environment<T> {
+public interface Environment<T extends Entity> {
     /**
      * Every environment should be have an internal state which is updated with by every ative memeber in it.
      *
@@ -18,9 +17,9 @@ public interface Environment<T> {
 
     void setEnvironmentState(State<T> state);
 
-    AVector validatePosition(AVector coordinate, Pedestrian pedestrian);
+    AVector validatePosition(AVector coordinate, T entity);
 
-    AVector validateVelocity(AVector velocity, Pedestrian pedestrian);
+    AVector validateVelocity(AVector velocity, T entity);
 
     List<Entity> getNeighbours(T member);
 
@@ -41,5 +40,7 @@ public interface Environment<T> {
     double getWidth();
 
     double getHeight();
+
+    List<Vector2> getDirectionsToWall(T entity);
 
 }

@@ -33,7 +33,7 @@ public class App {
 
     // first we create the pedestrians
     static int humanPopulation = 15;
-    static int zombiePopulation = 4;
+    static int zombiePopulation = 5;
 
     public static void main(String[] args) {
 

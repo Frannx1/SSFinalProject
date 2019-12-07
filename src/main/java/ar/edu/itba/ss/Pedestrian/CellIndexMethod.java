@@ -34,9 +34,7 @@ public class CellIndexMethod {
             int column = (int)Math.floor(p.getCoordinate().x / cellSize);
             int cell = (int)(row * (l/cellSize) + column);
             particleInCell.put(p.getNumber(), cell);
-            if(cells.get(cell) == null){
-                cells.put(cell, new LinkedList<>());
-            }
+            cells.computeIfAbsent(cell, k -> new LinkedList<>());
             LinkedList<Integer> ls = cells.get(cell);
             ls.add(p.getNumber());
             cells.put(cell, ls);

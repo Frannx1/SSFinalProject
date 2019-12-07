@@ -109,7 +109,7 @@ public class Zombie extends Pedestrian {
     }
 
     private void checkForHuman(Zombie zombie, Environment environment) {
-        List<Entity> neighbours = environment.getEnvironmentState().getMemebers();
+        List<Entity> neighbours = environment.getEnvironmentState().getMembers();
         if(target.isPresent()) {
             Optional<Entity> humanOptiona = neighbours.stream()
                     .filter(neighbour -> neighbour.equals(target.get())).findAny();

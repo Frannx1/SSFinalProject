@@ -18,7 +18,7 @@ public interface State<T> extends Persistable<State<T>> {
 
     State<T> addMember(T member);
 
-    List<T> getMemebers();
+    List<T> getMembers();
 
 
 }

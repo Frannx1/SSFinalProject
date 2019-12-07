@@ -2,7 +2,6 @@ package ar.edu.itba.ss.Pedestrian.Human.Heuristic;
 
 import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.Heuristic;
-import ar.edu.itba.ss.Pedestrian.Entity;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import ar.edu.itba.ss.Pedestrian.Zombie.Zombie;
@@ -33,7 +32,7 @@ public abstract class HumanHeuristic implements Heuristic<Human> {
 
 
     protected List<Vector2> getAllZombiesVector(Human human, Environment<Pedestrian> environment) {
-        return environment.getEnvironmentState().getMemebers().stream().filter( pedestrian -> pedestrian instanceof Zombie)
+        return environment.getEnvironmentState().getMembers().stream().filter(pedestrian -> pedestrian instanceof Zombie)
                 .map(zombie ->{
                     Vector2 vec = human.getDirectionTo(zombie);
                     double factor = human.getDistanceTo(zombie.getCoordinate()) - human.getRadius() - zombie.getRadius();

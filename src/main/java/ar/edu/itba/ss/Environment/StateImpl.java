@@ -59,7 +59,7 @@ public class StateImpl implements State<Pedestrian> {
     }
 
     @Override
-    public List<Pedestrian> getMemebers() {
+    public List<Pedestrian> getMembers() {
         return new ArrayList<>(members);
     }
 
