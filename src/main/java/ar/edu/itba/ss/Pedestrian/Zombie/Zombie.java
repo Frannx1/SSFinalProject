@@ -141,7 +141,7 @@ public class Zombie extends Pedestrian {
     public String toString() {
         return getNumber() + " " + getCoordinate().x + " " +
                 getCoordinate().y + " " + getVelocity().x + " " +
-                getVelocity().y + " " + getRadius() + " " + getMass() + " 1";
+                getVelocity().y + " " + getRadius() + " " + getMass() + " 255";
     }
 }
 

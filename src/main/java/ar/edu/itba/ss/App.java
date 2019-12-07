@@ -31,8 +31,8 @@ public class App {
     static double goalRadius = 0.5;
 
     // first we create the pedestrians
-    static int humanPopulation = 10;
-    static int zombiePopulation = 4;
+    static int humanPopulation = 15;
+    static int zombiePopulation = 3;
 
     public static void main(String[] args) {
 

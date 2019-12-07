@@ -127,7 +127,7 @@ public class Human extends Pedestrian {
     public String toString() {
         return getNumber() + " " + getCoordinate().x + " " +
                 getCoordinate().y + " " + getVelocity().x + " " +
-                getVelocity().y + " " +getRadius() + " " + getMass() + " 0.5";
+                getVelocity().y + " " +getRadius() + " " + getMass() + " 0";
     }
 
 }
