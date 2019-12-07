@@ -47,10 +47,12 @@ public abstract class Pedestrian extends Entity {
         // now update velocity
         Vector2 velocity;
         if (this.getRadius() > this.getMinRadius()) {
-            AVector direction =  getDirectionToTarget(environment);
-            direction =  (direction == null)? new Vector2() : direction.toNormal();
-            Vector2 targetVersor = (Vector2) direction;
+            AVector direction = getDirectionToTarget(environment);
+            direction = (direction == null)? new Vector2() : direction.toNormal();
+            Vector2 targetVersor = (direction == null)? new Vector2() : (Vector2) direction;
             velocity = targetVersor;
+            if (velocity == null)
+                System.out.println("la ptm");
             velocity.multiply(getDisplacementMagnitud());
 
         } else {
