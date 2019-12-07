@@ -25,15 +25,24 @@ public class StateImpl implements State<Pedestrian> {
             this.members = Collections.synchronizedSet(members);
     }
 
-    @Override
-    public State<Pedestrian> update(Pedestrian member, double deltaT, Environment environment) {
+    private void update(Pedestrian member, double deltaT, Environment environment) {
         this.members.remove(member);
         if(!(member instanceof Human) || !((Human) member).hasArrived(environment) ) {
             Pedestrian newMember = member.updatePosition(deltaT, environment)
                     .updateVelocity(deltaT, environment);
+            if(member instanceof Human && ((Human) member).wasBitten())
+                newMember = ((Human) member).transform();
             this.members.add(newMember);
         }
-        return new StateImpl(new HashSet<>(this.members));
+    }
+
+    @Override
+    public State<Pedestrian> update(double deltaT, Environment environment) {
+        Pedestrian[] pedestrians = members.toArray(new Pedestrian[]{});
+        for(int i = 0; i < pedestrians.length; i++)
+            update(pedestrians[i], deltaT, environment);
+
+        return new StateImpl(members);
     }
 
     @Override

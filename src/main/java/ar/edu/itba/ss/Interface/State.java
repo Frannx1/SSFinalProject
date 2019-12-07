@@ -1,5 +1,6 @@
 package ar.edu.itba.ss.Interface;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface State<T> extends Persistable<State<T>> {
@@ -11,7 +12,7 @@ public interface State<T> extends Persistable<State<T>> {
      *
      */
 
-    State<T> update(T member, double deltaT, Environment environment);
+    State<T> update(double deltaT, Environment environment);
 
     State<T> removeMember(T member);
 

@@ -49,6 +49,11 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     }
 
     @Override
+    public void updateMemberState(Pedestrian member, double deltaT) {
+
+    }
+
+    @Override
     public State getEnvironmentState() {
         return state;
     }
@@ -96,24 +101,22 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
         List<Pedestrian> pedestrians = Collections.synchronizedList(state.getMemebers());
 //                .stream().forEach(pedestrian -> updateMemberState(pedestrian, deltaT));
         synchronized (pedestrians) {
-            for (int i = 0; i < pedestrians.size(); i++) {
-                updateMemberState(pedestrians.get(i), deltaT);
-            }
+                state = state.update(deltaT, this);
         }
         simulatedTime += deltaT;
     }
 
-    @Override
-    public void updateMemberState(Pedestrian member, double deltaT) {
-        // aca tenemos que tener en cuenta que si es un humano y lo mordieron ... hay que sacarlo y tranformarlo
-        if((state = state.update(member, deltaT, this)) != null
-                &&  (member instanceof Human)
-                && ((Human) member).wasBitten()) {
-            Zombie zombie = ((Human) member).transform();
-            state = state.removeMember(member);
-            state = state.addMember(zombie);
-        }
-    }
+//    @Override
+//    public void updateMemberState(Pedestrian member, double deltaT) {
+//        // aca tenemos que tener en cuenta que si es un humano y lo mordieron ... hay que sacarlo y tranformarlo
+//        if((state = state.update(member, deltaT, this)) != null
+//                &&  (member instanceof Human)
+//                && ((Human) member).wasBitten()) {
+//            Zombie zombie = ((Human) member).transform();
+//            state = state.removeMember(member);
+//            state = state.addMember(zombie);
+//        }
+//    }
 
     @Override
     public boolean hasFinished(double simulationT) {

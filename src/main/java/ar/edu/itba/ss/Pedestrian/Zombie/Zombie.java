@@ -114,7 +114,7 @@ public class Zombie extends Pedestrian {
             Optional<Entity> humanOptiona = neighbours.stream()
                     .filter(neighbour -> neighbour.equals(target.get())).findAny();
 
-            if(humanOptiona.isPresent()) {
+            if(humanOptiona.isPresent() && !((Human)humanOptiona.get()).wasBitten()) {
                 Entity human = humanOptiona.get();
                 if (NeighbourFinderImpl.inContact(human, this))
                     infect((Human) human);
