@@ -11,6 +11,7 @@ import ar.edu.itba.ss.Pedestrian.Zombie.Zombie;
 import ar.edu.itba.ss.Pedestrian.Zombie.ZombieHeuristic;
 import mikera.vectorz.Vector2;
 
+import javax.print.attribute.standard.MediaSize;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
@@ -43,6 +44,7 @@ public class App {
     static int zombiePopulation = 10;
 
     public static void main(String[] args) {
+        //runMultipleSizeSameDensity(1, 0.1, 5);
         normal();
     }
 
@@ -59,7 +61,7 @@ public class App {
         addHumans(environment, humanPopulation, engine.getHumanQueue(), pedestrians.size());
 
         System.out.println("starting engine");
-        engine.simulate();
+        engine.simulate("simulation.data");
         System.out.println("simulation finished!");
     }
 
@@ -74,7 +76,7 @@ public class App {
 
         SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, 2 * deltaT, entranceFrequency);
         System.out.println("starting engine");
-        engine.simulate();
+        engine.simulate("simulation.data");
         System.out.println("simulation finished!");
     }
 
@@ -135,5 +137,29 @@ public class App {
         return currentPedestrians.stream()
                 .anyMatch(pedestrian ->
                         pedestrian.getDistanceTo(newPedestrian) <= pedestrian.getRadius() + newPedestrian.getRadius());
+    }
+
+    private static void runMultipleSizeSameDensity(double humanDensity, double zombieDeinsity, int runs) {
+        double increment = 5;
+        double size = width;
+        for (int i = 0; i < runs; i++) {
+            int humanSize =  (int) Math.ceil(humanDensity * (size * size));
+            int zombieSize = (int) Math.ceil(zombieDeinsity * (size * size));
+
+            Environment<Pedestrian> environment = new EnvironmentImpl(size, size, size/2,
+                    size/2, goalRadius, null, entranceRadius);
+
+            Set<Pedestrian> pedestrians = new HashSet<>();
+            addZombies(pedestrians, environment, zombieSize);
+            environment.setEnvironmentState(new StateImpl(pedestrians));
+
+            SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, simulationTime, entranceFrequency);
+            addHumans(environment, humanSize, engine.getHumanQueue(), pedestrians.size());
+
+            System.out.println("starting engine");
+            engine.simulate("sim_" + i + ".data");
+            System.out.println("simulation finished!");
+            size += increment;
+        }
     }
 }

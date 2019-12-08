@@ -55,7 +55,7 @@ public class SimulatorEngine<T extends Entity> {
         return humanQueue;
     }
 
-    public void simulate() {
+    public void simulate(String fileName) {
         while (!environment.hasFinished(simulationTime)) {
             // This loop will have to:
             // run through each member of the environment and update their state
@@ -70,7 +70,8 @@ public class SimulatorEngine<T extends Entity> {
             cim.calculateCells();
             environment.moveSimulation(deltaT, entranceFrequency);
         }
-        generateOutputFiles(buffer, "simulation.data");
+        generateOutputFiles(buffer, fileName);
+        System.out.println("survivros: " + environment.getSurvivors());
     }
 
     public void generateOutputFiles(StringBuffer stringBuffer, String outputName) {

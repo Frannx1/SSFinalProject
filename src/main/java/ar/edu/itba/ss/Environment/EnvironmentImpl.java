@@ -4,6 +4,7 @@ import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.State;
 import ar.edu.itba.ss.Pedestrian.CellIndexMethod;
 import ar.edu.itba.ss.Pedestrian.Entity;
+import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import ar.edu.itba.ss.Pedestrian.Wall;
 import mikera.vectorz.AVector;
@@ -35,6 +36,8 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
 
     private double entranceRadius;
 
+    private int survivors;
+
     public EnvironmentImpl() {}
 
     public EnvironmentImpl(double width, double height, double scapeCenter,
@@ -47,6 +50,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
         this.state = new StateImpl(pedestrians);
         this.goalRadius = goalRadius;
         this.entranceRadius = entranceRadius;
+        this.survivors = 0;
     }
 
     @Override
@@ -109,7 +113,9 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
 
     @Override
     public boolean hasFinished(double simulationT) {
-        return simulationT <= this.simulatedTime;
+
+        return simulationT <= this.simulatedTime && state.getMembers().stream()
+                .filter(pedestrian -> pedestrian instanceof Human).count() == 0;
     }
 
     /**
@@ -197,6 +203,16 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     public List<Vector2> getDirectionsToWall(Pedestrian pedestrian) {
         List<Entity> walls = getWallsNearest(pedestrian);
         return walls.stream().map(pedestrian::getVectorTo).collect(Collectors.toList());
+    }
+
+    @Override
+    public void addSurvivor() {
+        survivors++;
+    }
+
+    @Override
+    public int getSurvivors() {
+        return survivors;
     }
 
 }

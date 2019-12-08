@@ -33,7 +33,10 @@ public class StateImpl implements State<Pedestrian> {
             if(member instanceof Human && ((Human) member).wasBitten())
                 newMember = ((Human) member).transform();
             this.members.add(newMember);
+        } else {
+            environment.addSurvivor();
         }
+
     }
 
     @Override

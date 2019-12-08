@@ -111,8 +111,11 @@ public class Zombie extends Pedestrian {
 
     private void checkForHuman(Zombie zombie, Environment environment) {
         List<Entity> neighbours = environment.getEnvironmentState().getMembers();
-        neighbours = neighbours.stream().filter(entity -> entity instanceof Human).collect(Collectors.toList());
-        neighbours.sort(((o1, o2) -> (int)(o1.getDistanceTo(zombie) - o2.getDistanceTo(zombie))));
+        neighbours = neighbours.stream().filter(entity -> entity instanceof Human)
+                .filter(entity -> NeighbourFinderImpl.isNear(entity, zombie, getVisualField()))
+                .sorted((o1, o2) -> ((Double)o1.getDistanceTo(zombie)).compareTo(o2.getDistanceTo(zombie)))
+                .collect(Collectors.toList());
+
         for(Entity e : neighbours) {
             if(NeighbourFinderImpl.inContact(e, zombie) && !((Human)e).wasBitten() ) {
                 e.setMaxDisplacementMaginutd(zombie.getMaxDisplacementMaginutd());
@@ -120,7 +123,8 @@ public class Zombie extends Pedestrian {
                 return;
             }
         }
-        neighbours.stream().findFirst().ifPresent(entity -> zombie.setTarget((Human) entity));
+        Human human = (Human) neighbours.stream().findFirst().orElse(null);
+        zombie.setTarget(human);
     }
 
     @Override
@@ -130,4 +134,3 @@ public class Zombie extends Pedestrian {
                 getVelocity().y + " " + getRadius() + " " + getMass() + " 255";
     }
 }
-

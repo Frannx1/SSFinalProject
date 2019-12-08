@@ -47,4 +47,8 @@ public interface Environment<T extends Entity> {
 
     List<Vector2> getDirectionsToWall(T entity);
 
+    void addSurvivor();
+
+    int getSurvivors();
+
 }
