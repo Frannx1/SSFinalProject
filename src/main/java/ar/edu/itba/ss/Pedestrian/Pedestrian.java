@@ -79,7 +79,7 @@ public abstract class Pedestrian extends Entity {
             }
         }
         double radius = getRadius();
-        radius = radius + getMaxRadius() / (THAO / deltaT);
+        radius = (radius < getMaxRadius())? radius + getMaxRadius() / (THAO / deltaT) : radius;
         this.setRadius(radius);
     }
 

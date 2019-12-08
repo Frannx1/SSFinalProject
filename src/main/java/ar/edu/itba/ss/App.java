@@ -16,14 +16,14 @@ import java.util.Queue;
 import java.util.Set;
 
 public class App {
-    static double width = 15;
-    static double height = 15;
+    static double width = 20;
+    static double height = 20;
     static double simulationTime = 50;
     static double deltaT = 0.1;
     static double entranceFrequency = 0.6;
     static double beta = 0.9;
     static double maxDisplacementVelocity = 1.5;
-    static double escapeMagnitud = 5;
+    static double escapeMagnitud = 1.5;
     static double zombieDisplacementMagnitud = 0.80;
     static double scapeCenter = height /2;
     static double entranceCenter = scapeCenter;
