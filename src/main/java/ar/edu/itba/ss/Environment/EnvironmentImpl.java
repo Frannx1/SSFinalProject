@@ -46,6 +46,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
         this.simulatedTime = 0;
         this.state = new StateImpl(pedestrians);
         this.goalRadius = goalRadius;
+        this.entranceRadius = entranceRadius;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class App {
     static double height = 15;
     static double simulationTime = 50;
     static double deltaT = 0.1;
-    static double entranceFrequency = 0.4;
+    static double entranceFrequency = 0.6;
     static double beta = 0.9;
     static double maxDisplacementVelocity = 1.5;
     static double escapeMagnitud = 5;
@@ -32,10 +32,10 @@ public class App {
     static double minRadius = 0.1;
     static double maxRadius = 0.11;
     static double goalRadius = 0.5;
-    static double entranceRadius = 1;
+    static double entranceRadius = 5;
 
     // first we create the pedestrians
-    static int humanPopulation = 35;
+    static int humanPopulation = 50;
     static int zombiePopulation = 10;
 
     public static void main(String[] args) {
@@ -57,9 +57,9 @@ public class App {
 
     private static void addHumans(Environment environment, int size, Queue<Human> humanQueue, int index) {
         for (int i = 0; i < size; i++) {
-            boolean inserted = false;
             System.out.println((i + 1) + " humans created");
-            double yPosition = Math.random() * environment.getEntranceRadius() +((Vector2) environment.getStartingPoint()).y;
+            double yPosition = (Math.random() * environment.getEntranceRadius()) +
+                    (((Vector2) environment.getStartingPoint()).y - environment.getEntranceRadius()/2);
             Human human = new Human(index++, ((Vector2) environment.getStartingPoint()).x,
                     yPosition, maxDisplacementVelocity , escapeMagnitud, maxRadius,
                     minRadius, mass, beta, visualField);
