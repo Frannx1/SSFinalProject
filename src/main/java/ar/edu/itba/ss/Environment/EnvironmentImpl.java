@@ -32,24 +32,24 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
 
     private double simulatedTime;
 
-    private double goalRadius;
+    private double goalDiameter;
 
-    private double entranceRadius;
+    private double entranceDiameter;
 
     private int survivors;
 
     public EnvironmentImpl() {}
 
     public EnvironmentImpl(double width, double height, double scapeCenter,
-                           double entranceCenter, double goalRadius, Set<Pedestrian> pedestrians, double entranceRadius) {
+                           double entranceCenter, double goalDiameter, Set<Pedestrian> pedestrians, double entranceDiameter) {
         this.width = width;
         this.height = height;
         this.scapeCenter = scapeCenter;
         this.entranceCenter = entranceCenter;
         this.simulatedTime = 0;
         this.state = new StateImpl(pedestrians);
-        this.goalRadius = goalRadius;
-        this.entranceRadius = entranceRadius;
+        this.goalDiameter = goalDiameter;
+        this.entranceDiameter = entranceDiameter;
         this.survivors = 0;
     }
 
@@ -79,8 +79,8 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     }
 
     @Override
-    public double getEntranceRadius() {
-        return entranceRadius;
+    public double getEntranceDiameter() {
+        return entranceDiameter;
     }
 
     @Override
@@ -137,8 +137,8 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     }
 
     @Override
-    public double getFinalGoalRadius() {
-        return goalRadius;
+    public double getFinalGoalDiameter() {
+        return goalDiameter;
     }
 
     @Override
@@ -193,7 +193,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
         wallEntities.add(new Wall(-1, coordinates.x, height, 0.0, 0.0, 0.0, 0));
         wallEntities.add(new Wall(-1, coordinates.x, 0.0, 0.0, 0.0, 0.0, 0));
 
-        if (entity.getDistanceTo((Vector2) getFinalGoal()) >= 4 * getFinalGoalRadius())
+        if (entity.getDistanceTo((Vector2) getFinalGoal()) >= 4 * getFinalGoalDiameter())
             wallEntities.add(new Wall(-1, width ,coordinates.y, 0.0, 0.0, 0.0, 0));
 
         return wallEntities;

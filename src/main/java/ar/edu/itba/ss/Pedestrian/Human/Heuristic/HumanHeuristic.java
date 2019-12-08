@@ -17,7 +17,6 @@ public abstract class HumanHeuristic implements Heuristic<Human> {
     @Override
     public abstract AVector directionToTargetFrom(Human human, Environment environment);
 
-
     protected Vector2 getDistanceToDanger(Human human, Environment<Pedestrian> environment) {
         return getAllZombiesVector(human, environment).stream().min(Comparator.comparingDouble(vec -> vec.magnitude()))
                 .orElse(new Vector2());

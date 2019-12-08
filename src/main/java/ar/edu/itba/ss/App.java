@@ -4,6 +4,7 @@ import ar.edu.itba.ss.Environment.EnvironmentImpl;
 import ar.edu.itba.ss.Environment.StateImpl;
 import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.Heuristic;
+import ar.edu.itba.ss.Interface.Message;
 import ar.edu.itba.ss.Pedestrian.Human.Heuristic.FranHeuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.Pedestrian;
@@ -11,70 +12,102 @@ import ar.edu.itba.ss.Pedestrian.Zombie.Zombie;
 import ar.edu.itba.ss.Pedestrian.Zombie.ZombieHeuristic;
 import mikera.vectorz.Vector2;
 
-import javax.print.attribute.standard.MediaSize;
 import java.util.HashSet;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Set;
 
 public class App {
-    static double width = 20;
-    static double height = 20;
+
+    static double width = 15;
+    static double height = 15;
     static double simulationTime = 50;
     static double deltaT = 0.1;
-    static double entranceFrequency = 0.6;
+    static double humanEntranceFrequency = 0.6;
     static double beta = 0.9;
-    static double maxDisplacementVelocity = 1.5;
-    static double escapeMagnitud = 1.5;
-    static double zombieDisplacementMagnitud = 0.80;
-    static double scapeCenter = height /2;
-    static double entranceCenter = scapeCenter;
     static double mass = 58;
-    static double visualField = 10;
-    static double minRadius = 0.1;
-    static double maxRadius = 0.11;
-    static double goalRadius = 0.5;
-    static double entranceRadius = 5;
+    static double exitGoalDiameter = 0.5;
+    static double entranceDiameter = 5;
+
+    static int humanPopulation = 50;
+    static double humanMaxVelocity = 1.5;
+    static double humanVisualField = 10;
+    static double humanMinRadius = 0.1;
+    static double humanMaxRadius = 0.11;
+    static double humanCollisionEscapeMagnitude = 1.5;
+
+    static int zombiePopulation = 10;
+    static double zombieMaxVelocity = 0.80;
+    static double zombieVisualField = 10;
+    static double zombieMinRadius = 0.1;
+    static double zombieMaxRadius = 0.11;
+    static double zombieCollisionEscapeMagnitude = 1.5;
 
     // for vector field
     static double separation = 0.5;
     static int zombieRate = 20;
 
-    // first we create the pedestrians
-    static int humanPopulation = 50;
-    static int zombiePopulation = 10;
-
     public static void main(String[] args) {
-        //runMultipleSizeSameDensity(1, 0.1, 5);
-        normal();
+        Scanner in = new Scanner(System.in);
+        boolean exit = false;
+        Message.Welcome.print();
+        while(!exit) {
+            exit = processCommand(in.nextLine());
+        }
+        in.close();
     }
 
-    public static void normal() {
+    private static boolean processCommand(String s) {
+        String[] args = s.split(" ");
+        if( args.length == 1 && args[0].equals("help"))
+            Message.Help.print();
+        else if(args.length == 3 && args[0].equals("simulate") && args[1].equals("normal")) {
+            normal(width, height, simulationTime, humanEntranceFrequency, humanPopulation, zombiePopulation,
+                    humanMaxVelocity, zombieMaxVelocity, humanCollisionEscapeMagnitude, zombieCollisionEscapeMagnitude, exitGoalDiameter, Boolean.parseBoolean(args[2]), "simulation.data");
+        } else if(args.length == 9 && args[0].equals("simulate")) {
+            normal(Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]),
+                    Double.parseDouble(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]),
+                    humanMaxVelocity, zombieMaxVelocity, humanCollisionEscapeMagnitude, zombieCollisionEscapeMagnitude, Integer.parseInt(args[7]), Boolean.parseBoolean(args[8]), "simulation.data");
+        } else if(args.length == 7 && args[0].equals("simulate")  && args[1].equals("multiple")  && args[2].equals("density")) {
+            runMultipleSizeSameDensity(Double.parseDouble(args[3]), Double.parseDouble(args[4]), Integer.parseInt(args[5]), Boolean.parseBoolean(args[6]));
+        } else if(args.length == 1 && args[0].equals("exit"))
+            return true;
+        else
+            Message.InvalidParams.print();
+        return false;
+    }
 
-        Environment<Pedestrian> environment = new EnvironmentImpl(width, height, scapeCenter,
-                entranceCenter, goalRadius, null, entranceRadius);
+    private static void normal(double width, double height, double simulationTime, double humanEntranceFrequency,
+                               int humanPopulation, int zombiePopulation, double humanMaxVelocity,
+                               double zombieMaxVelocity, double humanCollisionEscapeMagnitude,
+                               double zombieCollisionEscapeMagnitude, double exitGoalDiameter, boolean zombieWall, String filename) {
+
+        Environment<Pedestrian> environment = new EnvironmentImpl(width, height, height/2,
+                height/2, exitGoalDiameter, null, entranceDiameter);
 
         Set<Pedestrian> pedestrians = new HashSet<>();
-        addZombies(pedestrians, environment, zombiePopulation);
+        addZombies(pedestrians, environment, zombiePopulation, zombieMaxVelocity, zombieCollisionEscapeMagnitude, zombieWall);
         environment.setEnvironmentState(new StateImpl(pedestrians));
 
-        SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, simulationTime, entranceFrequency);
-        addHumans(environment, humanPopulation, engine.getHumanQueue(), pedestrians.size());
+        SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, simulationTime, humanEntranceFrequency);
+        addHumans(environment, humanPopulation, engine.getHumanQueue(), pedestrians.size(), humanMaxVelocity,
+                humanCollisionEscapeMagnitude);
 
-        System.out.println("starting engine");
-        engine.simulate("simulation.data");
-        System.out.println("simulation finished!");
+        Message.SimulationRunning.print();
+        engine.simulate(filename);
+        Message.SimulationEnded.print();
     }
 
     public static void vectorField() {
 
-        Environment<Pedestrian> environment = new EnvironmentImpl(width, height, scapeCenter,
-                entranceCenter, goalRadius, null, entranceRadius);
+        Environment<Pedestrian> environment = new EnvironmentImpl(width, height, height/2,
+                height/2, exitGoalDiameter, null, entranceDiameter);
 
         Set<Pedestrian> pedestrians = new HashSet<>();
         addPedestriansToVectorField(pedestrians, environment, separation, zombieRate);
         environment.setEnvironmentState(new StateImpl(pedestrians));
 
-        SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, 2 * deltaT, entranceFrequency);
+        SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, 2 * deltaT, humanEntranceFrequency);
         System.out.println("starting engine");
         engine.simulate("simulation.data");
         System.out.println("simulation finished!");
@@ -86,12 +119,12 @@ public class App {
                 Pedestrian pedestrian;
                 Heuristic heuristic;
                 if (pedestrians.size() % zombieRate == 0 && Math.random() > 0.5) {
-                    pedestrian = new Zombie(pedestrians.size(), x, y, zombieDisplacementMagnitud, escapeMagnitud, maxRadius,
-                            minRadius, mass, beta, visualField);
+                    pedestrian = new Zombie(pedestrians.size(), x, y, zombieMaxVelocity, zombieCollisionEscapeMagnitude, zombieMaxRadius,
+                            zombieMinRadius, mass, beta, zombieVisualField);
                     heuristic = new ZombieHeuristic();
                 } else {
-                    pedestrian = new Human(pedestrians.size(), x, y, maxDisplacementVelocity , escapeMagnitud, maxRadius,
-                            minRadius, mass, beta, visualField);
+                    pedestrian = new Human(pedestrians.size(), x, y, humanMaxVelocity , humanCollisionEscapeMagnitude, humanMaxRadius,
+                            humanMinRadius, mass, beta, humanVisualField);
                     //TODO: factory
                     heuristic = new FranHeuristic();
                 }
@@ -100,30 +133,27 @@ public class App {
             }
         }
     }
-
-    private static void addHumans(Environment environment, int size, Queue<Human> humanQueue, int index) {
+    private static void addHumans(Environment<Pedestrian> environment, int size, Queue<Human> humanQueue, int index, double humanMaxVelocity, double collisionEscapeMagnitude) {
         for (int i = 0; i < size; i++) {
             System.out.println((i + 1) + " humans created");
-            double yPosition = (Math.random() * environment.getEntranceRadius()) +
-                    (((Vector2) environment.getStartingPoint()).y - environment.getEntranceRadius()/2);
-            Human human = new Human(index++, ((Vector2) environment.getStartingPoint()).x,
-                    yPosition, maxDisplacementVelocity , escapeMagnitud, maxRadius,
-                    minRadius, mass, beta, visualField);
+            double yPosition = (Math.random() * environment.getEntranceDiameter()) +
+                    (((Vector2) environment.getStartingPoint()).y - environment.getEntranceDiameter()/2);
+            Human human = new Human(index++, ((Vector2) environment.getStartingPoint()).x, yPosition, humanMaxVelocity,
+                    collisionEscapeMagnitude, humanMaxRadius, humanMinRadius, mass, beta, humanVisualField);
             human.setHeuristic(new FranHeuristic());
             humanQueue.offer(human);
         }
 
     }
-
-    private static void addZombies(Set<Pedestrian> pedestrians, Environment environment, int size) {
+    private static void addZombies(Set<Pedestrian> pedestrians, Environment<Pedestrian> environment, int size, double zombieMaxVelocity, double collisionEscapeMagnitude, boolean zombieWall) {
         for (int i = 0; i < size; i++) {
             System.out.println((i + 1) + " zombies created");
             boolean inserted = false;
             while(!inserted) {
+                double xPosition = zombieWall? ((Vector2) environment.getFinalGoal()).x : Math.random() * environment.getWidth();
                 double yPosition = Math.random() * environment.getHeight();
-                Zombie zombie = new Zombie(pedestrians.size(), ((Vector2) environment.getFinalGoal()).x,
-                        yPosition, zombieDisplacementMagnitud, escapeMagnitud, maxRadius,
-                        minRadius, mass, beta, visualField);
+                Zombie zombie = new Zombie(pedestrians.size(), xPosition, yPosition, zombieMaxVelocity,
+                        collisionEscapeMagnitude, zombieMaxRadius, zombieMinRadius, mass, beta, zombieVisualField);
                 zombie.setHeuristic(new ZombieHeuristic());
                 if(!isCollision(zombie, pedestrians)) {
                     pedestrians.add(zombie);
@@ -139,26 +169,17 @@ public class App {
                         pedestrian.getDistanceTo(newPedestrian) <= pedestrian.getRadius() + newPedestrian.getRadius());
     }
 
-    private static void runMultipleSizeSameDensity(double humanDensity, double zombieDeinsity, int runs) {
+    private static void runMultipleSizeSameDensity(double humanDensity, double zombieDeinsity, int runs, boolean zombieWall) {
         double increment = 5;
         double size = width;
         for (int i = 0; i < runs; i++) {
             int humanSize =  (int) Math.ceil(humanDensity * (size * size));
             int zombieSize = (int) Math.ceil(zombieDeinsity * (size * size));
 
-            Environment<Pedestrian> environment = new EnvironmentImpl(size, size, size/2,
-                    size/2, goalRadius, null, entranceRadius);
+            normal(size, size, simulationTime, humanEntranceFrequency, humanSize, zombieSize, humanMaxVelocity,
+                    zombieMaxVelocity, humanCollisionEscapeMagnitude, zombieCollisionEscapeMagnitude, exitGoalDiameter,
+                    zombieWall, "sim_" + i + ".data");
 
-            Set<Pedestrian> pedestrians = new HashSet<>();
-            addZombies(pedestrians, environment, zombieSize);
-            environment.setEnvironmentState(new StateImpl(pedestrians));
-
-            SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, simulationTime, entranceFrequency);
-            addHumans(environment, humanSize, engine.getHumanQueue(), pedestrians.size());
-
-            System.out.println("starting engine");
-            engine.simulate("sim_" + i + ".data");
-            System.out.println("simulation finished!");
             size += increment;
         }
     }

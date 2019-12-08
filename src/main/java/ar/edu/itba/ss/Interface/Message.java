@@ -9,18 +9,17 @@ public enum Message implements MessagePrinter {
     },
     Help {
         public void print() {
+            System.out.println("To simulate pedestrians with default parameters (width = 15, height = 15, " +
+                    "simulationTime = 50 seg, humanEntranceFrequency = 0.6 (pedestrians/seg), humanPopulation = 50, " +
+                    "zombiePopulation = 10, humanMaxVelocity = 1.5, zombieMaxVelocity = 0.8, collisionEscapeMagnitude 1.5, exitGoalDiameter = 0.5):");
+            System.out.println("simulate normal [zombieWall]");
+            System.out.println("To simulate pedestrians with a few custom parameters:");
+            System.out.println("simulate [width] [height] [simulationTime] [humanEntranceFrequency] [humanPopulation] " +
+                    "[zombiePopulation] [exitGoalDiameter] [zombieWall]");
+            System.out.println("To simulate pedestrians with a default parameters and multiple times with different size (increments of 5.0) and fix density:");
+            System.out.println("simulate multiple density [humanDensity] [zombieDensity] [iterations] [zombieWall]");
 
-            System.out.println("To simulate population:");
-            System.out.println("simulate [DT] [number of entities] [Time]");
-            System.out.println("To generate fundamental graph:");
-            System.out.println("fundamental");
-            System.out.println("To run width comparison:");
-            System.out.println("widthComparison");
-            System.out.println("To run approximator:");
-            System.out.println("approximation [pathToFile] [minBeta] [maxBeta]");
-            System.out.println("To run velocity graph:");
-            System.out.println("velocities [numberOfParticles] [simulationTime]");
-            System.out.println("To exit application: exit\n\n");
+            System.out.println("To exit application: \nexit\n\n");
         }
     },
     SimulationRunning {

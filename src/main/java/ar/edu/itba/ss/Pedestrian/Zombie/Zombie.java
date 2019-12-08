@@ -9,6 +9,7 @@ import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector2;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

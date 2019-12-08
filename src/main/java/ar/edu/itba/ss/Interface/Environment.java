@@ -19,7 +19,7 @@ public interface Environment<T extends Entity> {
 
     AVector validatePosition(AVector coordinate, T entity);
 
-    double getEntranceRadius();
+    double getEntranceDiameter();
 
     AVector validateVelocity(AVector velocity, T entity);
 
@@ -33,7 +33,7 @@ public interface Environment<T extends Entity> {
 
     AVector getFinalGoal();
 
-    double getFinalGoalRadius();
+    double getFinalGoalDiameter();
 
     CellIndexMethod getCim();
 

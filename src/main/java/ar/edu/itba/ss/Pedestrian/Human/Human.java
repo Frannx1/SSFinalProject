@@ -118,9 +118,10 @@ public class Human extends Pedestrian {
     }
 
     public boolean hasArrived(Environment environment) {
-        double bufferZone = getRadius() + environment.getFinalGoalRadius();
-        boolean resp = environment.getFinalGoal().distance(getCoordinate()) <= bufferZone;
-        return resp;
+        double bufferSizeX = 0.6;
+        double exitTopLimit = environment.getHeight() / 2 + environment.getFinalGoalDiameter() / 2;
+        double exitBottomLimit = environment.getHeight() / 2 - environment.getFinalGoalDiameter() / 2;
+        return getCoordinate().getX() >= environment.getWidth() - bufferSizeX && getCoordinate().getY() < exitTopLimit && getCoordinate().getY() > exitBottomLimit;
     }
 
     @Override
