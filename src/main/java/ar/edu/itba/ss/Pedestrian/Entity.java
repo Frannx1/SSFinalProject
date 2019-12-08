@@ -15,11 +15,6 @@ public abstract class Entity {
     private double maxRadius;
     private double beta;
     // TODO: this should not exist
-    public static  double MAX_RADIUS = 0.37;
-    public static  double MIN_RADIUS = 0.10;
-    public static final double MASS = 0.1;
-    public static final double MAX_SPEED = 0.95;
-    public static final double SCAPE_SPEED = 0.95;
     public static final double THAO = 0.5;
 
     @Deprecated
@@ -108,10 +103,7 @@ public abstract class Entity {
     }
 
     public void setRadius(double radius) {
-        if (radius >= MAX_RADIUS)
-            this.radius = MAX_RADIUS;
-        else
-            this.radius = radius;
+         this.radius = radius;
     }
 
     public Vector2 getCoordinate() {
