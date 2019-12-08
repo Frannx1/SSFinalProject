@@ -2,7 +2,6 @@ package ar.edu.itba.ss.Pedestrian.Zombie;
 
 import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.Heuristic;
-import ar.edu.itba.ss.Interface.NeighbourFinder;
 import ar.edu.itba.ss.Pedestrian.Entity;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.NeighbourFinderImpl;

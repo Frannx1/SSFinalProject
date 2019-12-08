@@ -94,7 +94,8 @@ public abstract class Pedestrian extends Entity {
                     scapeDirection.add(vec);
             }
         }
-        return scapeDirection;
+        scapeDirection = scapeDirection.toNormal();
+        return scapeDirection == null? new Vector2() : scapeDirection;
     }
 
     protected double getVisualField() {
