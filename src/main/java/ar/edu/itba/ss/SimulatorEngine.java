@@ -1,13 +1,18 @@
 package ar.edu.itba.ss;
 
 import ar.edu.itba.ss.Interface.Environment;
+import ar.edu.itba.ss.Interface.State;
 import ar.edu.itba.ss.Pedestrian.CellIndexMethod;
 import ar.edu.itba.ss.Pedestrian.Entity;
+import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.NeighbourFinderImpl;
+import ar.edu.itba.ss.Pedestrian.Pedestrian;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class SimulatorEngine<T extends Entity> {
 
@@ -20,13 +25,19 @@ public class SimulatorEngine<T extends Entity> {
 
     private double deltaT;
 
+    private double entranceFrequency;
+
+    private double lastEntrance;
+
     private double simulationTime;
 
     private CellIndexMethod cim;
 
     private StringBuffer buffer;
 
-    public SimulatorEngine(Environment<T> environment, double deltaT, double simulationTime) {
+    private Queue<Human> humanQueue;
+
+    public SimulatorEngine(Environment<T> environment, double deltaT, double simulationTime, double entranceFrequency) {
         this.environment = environment;
         this.deltaT = deltaT;
         this.simulationTime = simulationTime;
@@ -35,6 +46,13 @@ public class SimulatorEngine<T extends Entity> {
                 new NeighbourFinderImpl(1));
         this.environment.setCim(this.cim);
         this.buffer = new StringBuffer();
+        this.humanQueue = new ArrayDeque<>();
+        this.entranceFrequency = entranceFrequency;
+        this.lastEntrance = 0;
+    }
+
+    public Queue<Human> getHumanQueue() {
+        return humanQueue;
     }
 
     public void simulate() {
@@ -43,9 +61,14 @@ public class SimulatorEngine<T extends Entity> {
             // run through each member of the environment and update their state
             // update the state of the environment
             // check if the simulation has finished
+            double simulationTime = environment.getSimulatedTime();
+            if(simulationTime - lastEntrance >= entranceFrequency && !humanQueue.isEmpty()){
+                lastEntrance = simulationTime;
+                ((State<Pedestrian>) environment.getEnvironmentState()).addMember(humanQueue.poll());
+            }
             environment.getEnvironmentState().save(buffer);
             cim.calculateCells();
-            environment.moveSimulation(deltaT);
+            environment.moveSimulation(deltaT, entranceFrequency);
         }
         generateOutputFiles(buffer, "simulation.data");
     }

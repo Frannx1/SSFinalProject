@@ -14,6 +14,7 @@ import ar.edu.itba.ss.Pedestrian.Zombie.ZombieHeuristic;
 import mikera.vectorz.Vector2;
 
 import java.util.HashSet;
+import java.util.Queue;
 import java.util.Set;
 
 public class App {
@@ -21,6 +22,7 @@ public class App {
     static double height = 15;
     static double simulationTime = 50;
     static double deltaT = 0.1;
+    static double entranceFrequency = 0.6;
     static double beta = 0.9;
     static double maxDisplacementVelocity = 1.5;
     static double escapeMagnitud = 5;
@@ -32,14 +34,15 @@ public class App {
     static double minRadius = 0.1;
     static double maxRadius = 0.11;
     static double goalRadius = 0.5;
+    static double entranceRadius = 5;
 
     // for vector field
     static double separation = 0.5;
     static int zombieRate = 20;
 
     // first we create the pedestrians
-    static int humanPopulation = 15;
-    static int zombiePopulation = 5;
+    static int humanPopulation = 50;
+    static int zombiePopulation = 10;
 
     public static void main(String[] args) {
         normal();
@@ -48,14 +51,15 @@ public class App {
     public static void normal() {
 
         Environment<Pedestrian> environment = new EnvironmentImpl(width, height, scapeCenter,
-                entranceCenter, goalRadius, null);
+                entranceCenter, goalRadius, null, entranceRadius);
 
         Set<Pedestrian> pedestrians = new HashSet<>();
-        addHumans(pedestrians, environment, humanPopulation);
         addZombies(pedestrians, environment, zombiePopulation);
         environment.setEnvironmentState(new StateImpl(pedestrians));
 
-        SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, simulationTime);
+        SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, simulationTime, entranceFrequency);
+        addHumans(environment, humanPopulation, engine.getHumanQueue(), pedestrians.size());
+
         System.out.println("starting engine");
         engine.simulate();
         System.out.println("simulation finished!");
@@ -97,21 +101,16 @@ public class App {
         }
     }
 
-    private static void addHumans(Set<Pedestrian> pedestrians, Environment environment, int size) {
+    private static void addHumans(Environment environment, int size, Queue<Human> humanQueue, int index) {
         for (int i = 0; i < size; i++) {
-            boolean inserted = false;
             System.out.println((i + 1) + " humans created");
-            while(!inserted) {
-                double yPosition = Math.random() * environment.getHeight();
-                Human human = new Human(pedestrians.size(), ((Vector2) environment.getStartingPoint()).x,
-                        yPosition, maxDisplacementVelocity , escapeMagnitud, maxRadius,
-                        minRadius, mass, beta, visualField);
-                human.setHeuristic(new FranHeuristic());
-                if(!isCollition(human, pedestrians)) {
-                    pedestrians.add(human);
-                    inserted = true;
-                }
-            }
+            double yPosition = (Math.random() * environment.getEntranceRadius()) +
+                    (((Vector2) environment.getStartingPoint()).y - environment.getEntranceRadius()/2);
+            Human human = new Human(index++, ((Vector2) environment.getStartingPoint()).x,
+                    yPosition, maxDisplacementVelocity , escapeMagnitud, maxRadius,
+                    minRadius, mass, beta, visualField);
+            human.setHeuristic(new FranHeuristic());
+            humanQueue.offer(human);
         }
 
     }

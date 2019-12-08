@@ -19,11 +19,13 @@ public interface Environment<T extends Entity> {
 
     AVector validatePosition(AVector coordinate, T entity);
 
+    double getEntranceRadius();
+
     AVector validateVelocity(AVector velocity, T entity);
 
     List<Entity> getNeighbours(T member);
 
-    void moveSimulation(double deltaT);
+    void moveSimulation(double deltaT, double entranceFrequency);
 
     boolean hasFinished(double simulationT);
 
@@ -40,6 +42,8 @@ public interface Environment<T extends Entity> {
     double getWidth();
 
     double getHeight();
+
+    double getSimulatedTime();
 
     List<Vector2> getDirectionsToWall(T entity);
 

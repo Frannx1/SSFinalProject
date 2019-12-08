@@ -33,10 +33,12 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
 
     private double goalRadius;
 
+    private double entranceRadius;
+
     public EnvironmentImpl() {}
 
     public EnvironmentImpl(double width, double height, double scapeCenter,
-                           double entranceCenter, double goalRadius, Set<Pedestrian> pedestrians) {
+                           double entranceCenter, double goalRadius, Set<Pedestrian> pedestrians, double entranceRadius) {
         this.width = width;
         this.height = height;
         this.scapeCenter = scapeCenter;
@@ -44,6 +46,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
         this.simulatedTime = 0;
         this.state = new StateImpl(pedestrians);
         this.goalRadius = goalRadius;
+        this.entranceRadius = entranceRadius;
     }
 
     @Override
@@ -72,6 +75,11 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     }
 
     @Override
+    public double getEntranceRadius() {
+        return entranceRadius;
+    }
+
+    @Override
     public AVector validateVelocity(AVector velocity, Pedestrian pedestrian) {
         return velocity;
     }
@@ -89,7 +97,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     }
 
     @Override
-    public void moveSimulation(double deltaT) {
+    public void moveSimulation(double deltaT, double entranceFrequency) {
         // move forward the simulation by one time step
         List<Pedestrian> pedestrians = Collections.synchronizedList(state.getMembers());
 //                .stream().forEach(pedestrian -> updateMemberState(pedestrian, deltaT));
@@ -145,6 +153,11 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     @Override
     public double getHeight() {
         return height;
+    }
+
+    @Override
+    public double getSimulatedTime() {
+        return simulatedTime;
     }
 
     private List<Entity> addWalls(Entity entity) {
