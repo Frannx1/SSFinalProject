@@ -84,6 +84,8 @@ public class Zombie extends Pedestrian {
         //TODO: notar que el humano sigue existiendo.
         setTarget(null);
         human.bite();
+        human.setMaxRadius(getMaxRadius());
+        human.setMinRadius(getMinRadius());
         return true;
     }
 
