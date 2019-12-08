@@ -5,8 +5,6 @@ import ar.edu.itba.ss.Environment.StateImpl;
 import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.Heuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Heuristic.FranHeuristic;
-import ar.edu.itba.ss.Pedestrian.Human.Heuristic.HumanHeuristic;
-import ar.edu.itba.ss.Pedestrian.Human.Heuristic.MagneticHeuristic;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import ar.edu.itba.ss.Pedestrian.Zombie.Zombie;
@@ -68,13 +66,13 @@ public class App {
     public static void vectorField() {
 
         Environment<Pedestrian> environment = new EnvironmentImpl(width, height, scapeCenter,
-                entranceCenter, goalRadius, null);
+                entranceCenter, goalRadius, null, entranceRadius);
 
         Set<Pedestrian> pedestrians = new HashSet<>();
         addPedestriansToVectorField(pedestrians, environment, separation, zombieRate);
         environment.setEnvironmentState(new StateImpl(pedestrians));
 
-        SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, 2 * deltaT);
+        SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, 2 * deltaT, entranceFrequency);
         System.out.println("starting engine");
         engine.simulate();
         System.out.println("simulation finished!");
@@ -125,7 +123,7 @@ public class App {
                         yPosition, zombieDisplacementMagnitud, escapeMagnitud, maxRadius,
                         minRadius, mass, beta, visualField);
                 zombie.setHeuristic(new ZombieHeuristic());
-                if(!isCollition(zombie, pedestrians)) {
+                if(!isCollision(zombie, pedestrians)) {
                     pedestrians.add(zombie);
                     inserted = true;
                 }
@@ -133,7 +131,7 @@ public class App {
         }
     }
 
-    private static boolean isCollition(Pedestrian newPedestrian, Set<Pedestrian> currentPedestrians) {
+    private static boolean isCollision(Pedestrian newPedestrian, Set<Pedestrian> currentPedestrians) {
         return currentPedestrians.stream()
                 .anyMatch(pedestrian ->
                         pedestrian.getDistanceTo(newPedestrian) <= pedestrian.getRadius() + newPedestrian.getRadius());

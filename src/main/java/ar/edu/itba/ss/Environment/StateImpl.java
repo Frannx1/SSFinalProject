@@ -65,9 +65,9 @@ public class StateImpl implements State<Pedestrian> {
 
     @Override
     public void save(StringBuffer buffer) {
-        buffer.append(members.size() + "\n\n");
-        members.stream().forEach(pedestrian -> {
-          buffer.append(pedestrian.toString() + "\n");
+        buffer.append(members.size()).append("\n\n");
+        members.forEach(pedestrian -> {
+          buffer.append(pedestrian.toString()).append("\n");
         });
     }
 
