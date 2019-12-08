@@ -2,6 +2,7 @@ package ar.edu.itba.ss.Pedestrian.Zombie;
 
 import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.Heuristic;
+import ar.edu.itba.ss.Interface.NeighbourFinder;
 import ar.edu.itba.ss.Pedestrian.Entity;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.NeighbourFinderImpl;
@@ -11,6 +12,7 @@ import mikera.vectorz.Vector2;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Zombie extends Pedestrian {
 
@@ -110,31 +112,16 @@ public class Zombie extends Pedestrian {
 
     private void checkForHuman(Zombie zombie, Environment environment) {
         List<Entity> neighbours = environment.getEnvironmentState().getMembers();
-        if(target.isPresent()) {
-            Optional<Entity> humanOptiona = neighbours.stream()
-                    .filter(neighbour -> neighbour.equals(target.get())).findAny();
-
-            if(humanOptiona.isPresent() && !((Human)humanOptiona.get()).wasBitten()) {
-                Entity human = humanOptiona.get();
-                if (NeighbourFinderImpl.inContact(human, this))
-                    infect((Human) human);
-                else
-                    // we update our reference
-                    setTarget((Human) human);
-            } else {
-                setTarget(null);
-            }
-
-
-        } else {
-            for (Entity e : neighbours) {
-                boolean visible = NeighbourFinderImpl.isNear(this, e, visualField);
-                if (visible && (e instanceof Human)) {
-                    setTarget((Human) e);
-                    return;
-                }
+        neighbours = neighbours.stream().filter(entity -> entity instanceof Human).collect(Collectors.toList());
+        neighbours.sort(((o1, o2) -> (int)(o1.getDistanceTo(zombie) - o2.getDistanceTo(zombie))));
+        for(Entity e : neighbours) {
+            if(NeighbourFinderImpl.inContact(e, zombie) && !((Human)e).wasBitten() ) {
+                e.setMaxDisplacementMaginutd(zombie.getMaxDisplacementMaginutd());
+                zombie.infect((Human) e);
+                return;
             }
         }
+        neighbours.stream().findFirst().ifPresent(entity -> zombie.setTarget((Human) entity));
     }
 
     @Override
