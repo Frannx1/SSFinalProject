@@ -17,10 +17,10 @@ import mikera.vectorz.Vector2;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Scanner;
-import java.util.Set;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class App {
 
@@ -70,24 +70,28 @@ public class App {
             normal(width, height, simulationTime, humanEntrancePeriod, humanPopulation, zombiePopulation,
                     humanMaxVelocity, humanVisualField, humanMinRadius, humanMaxRadius,
                     humanCollisionEscapeMagnitude, zombieMaxVelocity, zombieVisualField, zombieMinRadius, zombieMaxRadius,
-                    zombieCollisionEscapeMagnitude, exitGoalDiameter, Boolean.parseBoolean(args[2]), "simulation.data");
+                    zombieCollisionEscapeMagnitude, exitGoalDiameter, Boolean.parseBoolean(args[2]), "simulation.data", true);
         }
         else if(args.length == 9 && args[0].equals("simulate")) {
             normal(Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]),
                     Double.parseDouble(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]),
                     humanMaxVelocity, humanVisualField, humanMinRadius, humanMaxRadius,
                     humanCollisionEscapeMagnitude, zombieMaxVelocity, zombieVisualField, zombieMinRadius, zombieMaxRadius,
-                    zombieCollisionEscapeMagnitude, Integer.parseInt(args[7]), Boolean.parseBoolean(args[8]), "simulation.data");
+                    zombieCollisionEscapeMagnitude, Integer.parseInt(args[7]), Boolean.parseBoolean(args[8]), "simulation.data", true);
         }
         else if(args.length == 21 && args[0].equals("simulate")  && args[1].equals("high")  && args[2].equals("custom")) {
             normal(Double.parseDouble(args[3]), Double.parseDouble(args[4]), Double.parseDouble(args[5]),
                     Double.parseDouble(args[6]), Integer.parseInt(args[7]), Integer.parseInt(args[8]),
                     Double.parseDouble(args[11]), Double.parseDouble(args[12]), Double.parseDouble(args[13]), Double.parseDouble(args[14]), Double.parseDouble(args[15]),
                     Double.parseDouble(args[16]), Double.parseDouble(args[17]), Double.parseDouble(args[18]), Double.parseDouble(args[19]), Double.parseDouble(args[20]),
-                    Integer.parseInt(args[9]), Boolean.parseBoolean(args[10]), "simulation.data");
+                    Integer.parseInt(args[9]), Boolean.parseBoolean(args[10]), "simulation.data", true);
         }
         else if(args.length == 7 && args[0].equals("simulate")  && args[1].equals("multiple")  && args[2].equals("density")) {
-            runMultipleSizeSameDensity(Double.parseDouble(args[3]), Double.parseDouble(args[4]), Integer.parseInt(args[5]), Boolean.parseBoolean(args[6]));
+            try {
+                runMultipleSizeSameDensity(Double.parseDouble(args[3]), Double.parseDouble(args[4]), Integer.parseInt(args[5]), Boolean.parseBoolean(args[6]));
+            } catch (IOException e) {
+                System.out.println("Sorry something went wrong, try restarting the script");
+            }
         }
         else if(args.length == 3 && args[0].equals("modify") && args[1].equals("heuristic")) {
             try {
@@ -116,11 +120,11 @@ public class App {
         return false;
     }
 
-    private static void normal(double width, double height, double simulationTime, double humanEntrancePeriod,
+    private static int normal(double width, double height, double simulationTime, double humanEntrancePeriod,
                                int humanPopulation, int zombiePopulation, double humanMaxVelocity,
                                double humanVisualField, double humanMinRadius, double humanMaxRadius, double humanCollisionEscapeMagnitude,
                                double zombieMaxVelocity, double zombieVisualField, double zombieMinRadius, double zombieMaxRadius, double zombieCollisionEscapeMagnitude,
-                               double exitGoalDiameter, boolean zombieWall, String filename) {
+                               double exitGoalDiameter, boolean zombieWall, String filename, boolean save) {
 
         Environment<Pedestrian> environment = new EnvironmentImpl(width, height, height/2,
                 height/2, exitGoalDiameter, null, entranceDiameter);
@@ -135,8 +139,9 @@ public class App {
                 humanCollisionEscapeMagnitude);
 
         Message.SimulationRunning.print();
-        engine.simulate(filename);
+        int survivors = engine.simulate(filename, save);
         Message.SimulationEnded.print();
+        return survivors;
     }
 
     public static void vectorField() {
@@ -150,7 +155,7 @@ public class App {
 
         SimulatorEngine<Pedestrian> engine = new SimulatorEngine<>(environment, deltaT, 2 * deltaT, humanEntrancePeriod);
         System.out.println("starting engine");
-        engine.simulate("simulation.data");
+        engine.simulate("simulation.data", true);
         System.out.println("simulation finished!");
     }
 
@@ -183,7 +188,6 @@ public class App {
                                   double humanMaxVelocity, double humanVisualField, double humanMinRadius,
                                   double humanMaxRadius, double humanCollisionEscapeMagnitude) {
         for (int i = 0; i < size; i++) {
-            System.out.println((i + 1) + " humans created");
             double yPosition = (Math.random() * environment.getEntranceDiameter()) +
                     (((Vector2) environment.getStartingPoint()).y - environment.getEntranceDiameter()/2);
             Human human = new Human(index++, ((Vector2) environment.getStartingPoint()).x, yPosition, humanMaxVelocity,
@@ -202,7 +206,6 @@ public class App {
                                    double zombieMaxVelocity, double zombieVisualField, double zombieMinRadius,
                                    double zombieMaxRadius, double zombieCollisionEscapeMagnitude, boolean zombieWall) {
         for (int i = 0; i < size; i++) {
-            System.out.println((i + 1) + " zombies created");
             boolean inserted = false;
             while(!inserted) {
                 double xPosition = zombieWall? ((Vector2) environment.getFinalGoal()).x : Math.random() * environment.getWidth();
@@ -224,20 +227,26 @@ public class App {
                         pedestrian.getDistanceTo(newPedestrian) <= pedestrian.getRadius() + newPedestrian.getRadius());
     }
 
-    private static void runMultipleSizeSameDensity(double humanDensity, double zombieDeinsity, int runs, boolean zombieWall) {
-        double increment = 5;
+    private static void runMultipleSizeSameDensity(double humanDensity, double zombieDeinsity, int runs, boolean zombieWall) throws IOException {
+        double increment = 0.5;
         double size = width;
+        StringBuffer buffer = new StringBuffer();
+        BufferedWriter writer = new BufferedWriter(new FileWriter("survivors.data"));
         for (int i = 0; i < runs; i++) {
             int humanSize =  (int) Math.ceil(humanDensity * (size * size));
             int zombieSize = (int) Math.ceil(zombieDeinsity * (size * size));
-
-            normal(size, size, simulationTime, humanEntrancePeriod, humanSize, zombieSize, humanMaxVelocity,
-                    humanVisualField, humanMinRadius, humanMaxRadius, humanCollisionEscapeMagnitude, zombieMaxVelocity,
-                    zombieVisualField, zombieMinRadius, zombieMaxRadius, zombieCollisionEscapeMagnitude,
-                    exitGoalDiameter, zombieWall, "sim_" + i + ".data");
-
+            List<Integer> survivors = new ArrayList<>();
+            for (int j = 0; j < 3; j++) {
+                survivors.add(normal(size, size, simulationTime, humanEntrancePeriod, humanSize, zombieSize, humanMaxVelocity,
+                        humanVisualField, humanMinRadius, humanMaxRadius, humanCollisionEscapeMagnitude, zombieMaxVelocity,
+                        zombieVisualField, zombieMinRadius, zombieMaxRadius, zombieCollisionEscapeMagnitude,
+                        exitGoalDiameter, zombieWall, "sim_" + i + ".data", false));
+            }
+            survivors.stream().forEach(survivor -> buffer.append(survivor + " "));
+            buffer.append('\n');
             size += increment;
         }
+        SimulatorEngine.flushBuffer(buffer, writer);
     }
 
     private static String getFormula(Message message, Scanner in) {

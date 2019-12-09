@@ -55,7 +55,7 @@ public class SimulatorEngine<T extends Entity> {
         return humanQueue;
     }
 
-    public void simulate(String fileName) {
+    public int simulate(String fileName, boolean save) {
         BufferedWriter writer;
         try {
             writer = new BufferedWriter(new FileWriter(fileName));
@@ -72,7 +72,8 @@ public class SimulatorEngine<T extends Entity> {
                 lastEntrance = simulatedTime;
                 ((State<Pedestrian>) environment.getEnvironmentState()).addMember(humanQueue.poll());
             }
-            environment.getEnvironmentState().save(buffer);
+            if(save)
+                environment.getEnvironmentState().save(buffer);
             cim.calculateCells();
             environment.moveSimulation(deltaT, entranceFrequency);
             if (simulatedTime % 1 < deltaT) {
@@ -86,9 +87,10 @@ public class SimulatorEngine<T extends Entity> {
             e.printStackTrace();
         }
         System.out.println("survivros: " + environment.getSurvivors());
+        return environment.getSurvivors();
     }
 
-    public void flushBuffer(StringBuffer stringBuffer, BufferedWriter writer) {
+    public static void flushBuffer(StringBuffer stringBuffer, BufferedWriter writer) {
         try {
             writer.write(stringBuffer.toString());
             writer.flush();
