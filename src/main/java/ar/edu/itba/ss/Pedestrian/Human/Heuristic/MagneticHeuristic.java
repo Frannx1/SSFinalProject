@@ -23,7 +23,7 @@ public class MagneticHeuristic extends HumanHeuristic {
         List<Vector2> zombies = getAllZombiesVector(human, environment);
 
         zombies.stream().forEach(zombie -> {
-            zombie.multiply(Math.exp(-zombie.magnitude() + 3) * 0.3);
+            zombie.multiply(1 / Math.pow(zombie.magnitude(), 2));
             distanceToGoal.sub(zombie);
         });
         return distanceToGoal.toNormal();
