@@ -13,10 +13,8 @@ import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import ar.edu.itba.ss.Pedestrian.Zombie.Zombie;
 import ar.edu.itba.ss.Pedestrian.Zombie.ZombieHeuristic;
 import mikera.vectorz.Vector2;
+import org.mariuszgromada.math.mxparser.Expression;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -251,28 +249,19 @@ public class App {
     }
 
     private static String getFormula(Message message, Scanner in) {
-        ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine eng = mgr.getEngineByName("JavaScript");
-
         boolean okey = false;
         String formula = null;
         message.print();
         while(!okey) {
             formula = in.nextLine();
-            String evalFormoula = formula;
-            try {
-                eng.eval(evalFormoula
-                        .replace("X", String.valueOf(1))
-                        .replace("Y", String.valueOf(1))
-                        .replace("Vx", String.valueOf(1))
-                        .replace("Vy", String.valueOf(1))
-                        .replace("R", String.valueOf(1))
-                        .replace("D", String.valueOf(1)));
-                okey = true;
-            } catch (ScriptException e) {
-                Message.InvalidSelectFormula.print();
-                okey = false;
-            }
+            String evalFormula = formula;
+            okey = new Expression(evalFormula
+                    .replace("X", String.valueOf(1))
+                    .replace("Y", String.valueOf(1))
+                    .replace("Vx", String.valueOf(1))
+                    .replace("Vy", String.valueOf(1))
+                    .replace("R", String.valueOf(1))
+                    .replace("D", String.valueOf(1))).checkSyntax();
         }
         return formula;
     }

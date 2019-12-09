@@ -13,6 +13,8 @@
   <properties>
     <org.apache.commons-lang.version>2.4</org.apache.commons-lang.version>
     <org.apache.commons-lang3.version>3.9</org.apache.commons-lang3.version>
+    <org.mariuszgromada.math.version>4.1.1</org.mariuszgromada.math.version>
+    <version>${org.apache.commons-lang.version}</version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
@@ -44,6 +46,13 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>${org.apache.commons-lang3.version}</version>
+    </dependency>
+
+    <!-- Math Parser and Evaluator https://mvnrepository.com/artifact/org.mariuszgromada.math/MathParser.org-mXparser -->
+    <dependency>
+      <groupId>org.mariuszgromada.math</groupId>
+      <artifactId>MathParser.org-mXparser</artifactId>
+      <version>${org.mariuszgromada.math.version}</version>
     </dependency>
 
 

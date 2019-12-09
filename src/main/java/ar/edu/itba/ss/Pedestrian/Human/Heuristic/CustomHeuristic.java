@@ -4,10 +4,8 @@ import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import mikera.vectorz.AVector;
 import mikera.vectorz.Vector2;
+import org.mariuszgromada.math.mxparser.Expression;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -25,14 +23,6 @@ public class CustomHeuristic extends HumanHeuristic {
     private static String zombieFormula = "x";
 
     private static int zombieLimit = 5;
-
-    ScriptEngineManager mgr;
-    ScriptEngine eng;
-
-    public CustomHeuristic() {
-        mgr = new ScriptEngineManager();
-        eng = mgr.getEngineByName("JavaScript");
-    }
 
     public static void setGoalFormula(String goalFormula) {
         CustomHeuristic.goalFormula = goalFormula;
@@ -54,11 +44,7 @@ public class CustomHeuristic extends HumanHeuristic {
         Vector2 direction = getDistanceToGoal(human, environment);
         double mGoal;
 
-        try {
-            mGoal = Double.parseDouble(eng.eval(replaceInFormula(goalFormula, human, direction.magnitude())).toString());
-        } catch (ScriptException e) {
-            throw new RuntimeException("There was a problem with the custom formula, calculating goal reaction.");
-        }
+        mGoal = new Expression(replaceInFormula(goalFormula, human, direction.magnitude())).calculate();
         direction.multiply(mGoal);
 
         List<Vector2> zombiesDistanceVector = getAllZombiesVector(human, environment);
@@ -67,20 +53,12 @@ public class CustomHeuristic extends HumanHeuristic {
         List<Vector2> wallDistanceVector = environment.getDirectionsToWall(human);
 
         wallDistanceVector.forEach(wallVector -> {
-            try {
-                wallVector.multiply(Double.parseDouble(eng.eval(replaceInFormula(wallFormula, human, wallVector.magnitude())).toString()));
-            } catch (ScriptException e) {
-                throw new RuntimeException("There was a problem with the custom formula, calculating wall's reaction.");
-            }
+            wallVector.multiply(new Expression(replaceInFormula(wallFormula, human, wallVector.magnitude())).calculate());
             direction.sub(wallVector);
         });
 
         zombiesDistanceVector.stream().limit(zombieLimit).forEach(zombieVector -> {
-            try {
-                zombieVector.multiply(Double.parseDouble(eng.eval(replaceInFormula(zombieFormula, human, zombieVector.magnitude())).toString()));
-            } catch (ScriptException e) {
-                throw new RuntimeException("There was a problem with the custom formula, calculating zombie's reaction.");
-            }
+            zombieVector.multiply(new Expression(replaceInFormula(zombieFormula, human, zombieVector.magnitude())).calculate());
             direction.sub(zombieVector);
         });
         return direction.toNormal();
