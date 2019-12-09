@@ -103,7 +103,7 @@ public class EnvironmentImpl implements Environment<Pedestrian> {
     @Override
     public void moveSimulation(double deltaT, double entranceFrequency) {
         // move forward the simulation by one time step
-        List<Pedestrian> pedestrians = Collections.synchronizedList(state.getMembers());
+        List<Pedestrian> pedestrians = state.getMembers();
 //                .stream().forEach(pedestrian -> updateMemberState(pedestrian, deltaT));
         synchronized (pedestrians) {
                 state = state.update(deltaT, this);
