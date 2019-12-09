@@ -29,6 +29,9 @@ public enum Message implements MessagePrinter {
             System.out.println("To simulate human and zombies pedestrians with a default parameters and multiple times with different size (increments of 5.0) and fix density:");
             System.out.println("simulate multiple density [humanDensity] [zombieDensity] [iterations] [zombieWall]\n");
 
+            System.out.println("To modify the human heuristic (options: magnetic, fixed_magnetic, linear, ruled, custom):");
+            System.out.println("modify heuristic [human_heuristic]\n");
+
             System.out.println("To exit application: \nexit\n\n");
         }
     },
@@ -40,6 +43,36 @@ public enum Message implements MessagePrinter {
     SimulationEnded {
         public void print() {
             System.out.println("\nSimulation finished.");
+        }
+    },
+    HeuristicModify{
+        public void print() {
+            System.out.println("\nHeuristic changed successfully.\n\n");
+        }
+    },
+    InvalidSelectFormula {
+        public void print() {
+            System.out.println("\nThere was a problem with this formula, please try again.\n");
+        }
+    },
+    SelectGoalFormula {
+        public void print() {
+            System.out.println("\nInsert goal distance formula. The x variable is the distance to the goal:");
+        }
+    },
+    SelectWallFormula {
+        public void print() {
+            System.out.println("\nInsert wall distance formula. The x variable is the distance to a wall:");
+        }
+    },
+    SelectZombieFormula {
+        public void print() {
+            System.out.println("\nInsert zombie distance formula. The x variable is the distance to a zombie:");
+        }
+    },
+    SelectZombieLimit {
+        public void print() {
+            System.out.println("\nInsert the number of nearest zombies to acknowledge for decision making process:");
         }
     },
     InvalidParams {

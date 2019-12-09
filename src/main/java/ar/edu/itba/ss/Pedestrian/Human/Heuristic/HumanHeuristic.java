@@ -29,7 +29,6 @@ public abstract class HumanHeuristic implements Heuristic<Human> {
         return distanceToGoal;
     }
 
-
     protected List<Vector2> getAllZombiesVector(Human human, Environment<Pedestrian> environment) {
         return environment.getEnvironmentState().getMembers().stream().filter(pedestrian -> pedestrian instanceof Zombie)
                 .map(zombie ->{
@@ -39,5 +38,6 @@ public abstract class HumanHeuristic implements Heuristic<Human> {
                     return vec;
                 }).collect(Collectors.toList());
     }
+
 }
 

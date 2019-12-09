@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class FranHeuristic extends HumanHeuristic {
+public class FixedMagneticHeuristic extends HumanHeuristic {
     /**
      * In this implementation, we play with what could be consider an electromagnetic force.
      * The Idea is, the goal applies a constant force twards itself wich makes every human move forward.

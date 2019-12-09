@@ -5,13 +5,18 @@ import ar.edu.itba.ss.Environment.StateImpl;
 import ar.edu.itba.ss.Interface.Environment;
 import ar.edu.itba.ss.Interface.Heuristic;
 import ar.edu.itba.ss.Interface.Message;
-import ar.edu.itba.ss.Pedestrian.Human.Heuristic.FranHeuristic;
+import ar.edu.itba.ss.Pedestrian.Human.Heuristic.CustomHeuristic;
+import ar.edu.itba.ss.Pedestrian.Human.Heuristic.FixedMagneticHeuristic;
+import ar.edu.itba.ss.Pedestrian.Human.Heuristic.HumanHeuristicFactory;
 import ar.edu.itba.ss.Pedestrian.Human.Human;
 import ar.edu.itba.ss.Pedestrian.Pedestrian;
 import ar.edu.itba.ss.Pedestrian.Zombie.Zombie;
 import ar.edu.itba.ss.Pedestrian.Zombie.ZombieHeuristic;
 import mikera.vectorz.Vector2;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Scanner;
@@ -52,12 +57,12 @@ public class App {
         boolean exit = false;
         Message.Welcome.print();
         while(!exit) {
-            exit = processCommand(in.nextLine());
+            exit = processCommand(in.nextLine(), in);
         }
         in.close();
     }
 
-    private static boolean processCommand(String s) {
+    private static boolean processCommand(String s, Scanner in) {
         String[] args = s.split(" ");
         if( args.length == 1 && args[0].equals("help"))
             Message.Help.print();
@@ -83,6 +88,26 @@ public class App {
         }
         else if(args.length == 7 && args[0].equals("simulate")  && args[1].equals("multiple")  && args[2].equals("density")) {
             runMultipleSizeSameDensity(Double.parseDouble(args[3]), Double.parseDouble(args[4]), Integer.parseInt(args[5]), Boolean.parseBoolean(args[6]));
+        }
+        else if(args.length == 3 && args[0].equals("modify") && args[1].equals("heuristic")) {
+            try {
+                HumanHeuristicFactory.HumanHeuristicType heuristicType = HumanHeuristicFactory.HumanHeuristicType.valueOf(args[2].toUpperCase());
+                HumanHeuristicFactory.setHumanHeuristicType(heuristicType);
+                if (heuristicType.equals(HumanHeuristicFactory.HumanHeuristicType.CUSTOM)) {
+                    String formula = getFormula(Message.SelectGoalFormula, in);
+                    CustomHeuristic.setGoalFormula(formula);
+                    formula = getFormula(Message.SelectWallFormula, in);
+                    CustomHeuristic.setWallFormula(formula);
+                    formula = getFormula(Message.SelectZombieFormula, in);
+                    CustomHeuristic.setZombieFormula(formula);
+                    Message.SelectZombieLimit.print();
+                    CustomHeuristic.setZombieLimit(Integer.parseInt(in.nextLine()));
+                }
+                Message.HeuristicModify.print();
+
+            } catch (IllegalArgumentException e) {
+                Message.InvalidParams.print();
+            }
         }
         else if(args.length == 1 && args[0].equals("exit"))
             return true;
@@ -141,15 +166,18 @@ public class App {
                 } else {
                     pedestrian = new Human(pedestrians.size(), x, y, humanMaxVelocity , humanCollisionEscapeMagnitude, humanMaxRadius,
                             humanMinRadius, mass, beta, humanVisualField);
-                    //TODO: factory
-                    heuristic = new FranHeuristic();
+                    try {
+                        heuristic = HumanHeuristicFactory.newHumanHeuristic();
+                    } catch (IllegalAccessException | InstantiationException e) {
+                        System.out.println("There was an unhandled problem with the human heuristic creation.");
+                        heuristic = new FixedMagneticHeuristic();
+                    }
                 }
                 pedestrian.setHeuristic(heuristic);
                 pedestrians.add(pedestrian);
             }
         }
     }
-
 
     private static void addHumans(Environment<Pedestrian> environment, int size, Queue<Human> humanQueue, int index,
                                   double humanMaxVelocity, double humanVisualField, double humanMinRadius,
@@ -160,7 +188,11 @@ public class App {
                     (((Vector2) environment.getStartingPoint()).y - environment.getEntranceDiameter()/2);
             Human human = new Human(index++, ((Vector2) environment.getStartingPoint()).x, yPosition, humanMaxVelocity,
                     humanCollisionEscapeMagnitude, humanMaxRadius, humanMinRadius, mass, beta, humanVisualField);
-            human.setHeuristic(new FranHeuristic());
+            try {
+                human.setHeuristic(HumanHeuristicFactory.newHumanHeuristic());
+            } catch (IllegalAccessException | InstantiationException e) {
+                System.out.println("There was an unhandled problem with the human heuristic creation.");
+            }
             humanQueue.offer(human);
         }
 
@@ -206,5 +238,26 @@ public class App {
 
             size += increment;
         }
+    }
+
+    private static String getFormula(Message message, Scanner in) {
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine eng = mgr.getEngineByName("JavaScript");
+
+        boolean okey = false;
+        String formula = null;
+        message.print();
+        while(!okey) {
+            formula = in.nextLine();
+            String evalFormoula = formula;
+            try {
+                eng.eval(evalFormoula.replace("x", String.valueOf(1)));
+                okey = true;
+            } catch (ScriptException e) {
+                Message.InvalidSelectFormula.print();
+                okey = false;
+            }
+        }
+        return formula;
     }
 }

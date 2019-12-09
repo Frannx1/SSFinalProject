@@ -56,34 +56,43 @@ public class SimulatorEngine<T extends Entity> {
     }
 
     public void simulate(String fileName) {
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter(fileName));
+        } catch (IOException e) {
+            throw new RuntimeException("Problem with output file.");
+        }
         while (!environment.hasFinished(simulationTime)) {
             // This loop will have to:
             // run through each member of the environment and update their state
             // update the state of the environment
             // check if the simulation has finished
-            double simulationTime = environment.getSimulatedTime();
-            if(simulationTime - lastEntrance >= entranceFrequency && !humanQueue.isEmpty()){
-                lastEntrance = simulationTime;
+            double simulatedTime = environment.getSimulatedTime();
+            if(simulatedTime - lastEntrance >= entranceFrequency && !humanQueue.isEmpty()){
+                lastEntrance = simulatedTime;
                 ((State<Pedestrian>) environment.getEnvironmentState()).addMember(humanQueue.poll());
             }
             environment.getEnvironmentState().save(buffer);
             cim.calculateCells();
             environment.moveSimulation(deltaT, entranceFrequency);
+            if (simulatedTime % 1 < deltaT) {
+                flushBuffer(buffer, writer);
+            }
         }
-        generateOutputFiles(buffer, fileName);
+        flushBuffer(buffer, writer);
+        try {
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.println("survivros: " + environment.getSurvivors());
     }
 
-    public void generateOutputFiles(StringBuffer stringBuffer, String outputName) {
+    public void flushBuffer(StringBuffer stringBuffer, BufferedWriter writer) {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputName));
             writer.write(stringBuffer.toString());
             writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getCause());
-            System.out.println(e.toString());
+            stringBuffer.delete(0, stringBuffer.length());
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getCause());
