@@ -22,7 +22,7 @@ public class StateImpl implements State<Pedestrian> {
 
     public StateImpl(Set<Pedestrian> members) {
         if(members!= null)
-            this.members = Collections.synchronizedSet(members);
+            this.members = members;
     }
 
     private void update(Pedestrian member, double deltaT, Environment environment) {
