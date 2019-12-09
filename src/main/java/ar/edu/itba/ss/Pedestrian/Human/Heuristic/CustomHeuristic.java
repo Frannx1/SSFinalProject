@@ -53,8 +53,9 @@ public class CustomHeuristic extends HumanHeuristic {
     public AVector directionToTargetFrom(Human human, Environment environment) {
         Vector2 direction = getDistanceToGoal(human, environment);
         double mGoal;
+
         try {
-            mGoal = Double.parseDouble(eng.eval(goalFormula.replace("x", String.valueOf(direction.magnitude()))).toString());
+            mGoal = Double.parseDouble(eng.eval(replaceInFormula(goalFormula, human, direction.magnitude())).toString());
         } catch (ScriptException e) {
             throw new RuntimeException("There was a problem with the custom formula, calculating goal reaction.");
         }
@@ -67,7 +68,7 @@ public class CustomHeuristic extends HumanHeuristic {
 
         wallDistanceVector.forEach(wallVector -> {
             try {
-                wallVector.multiply(Double.parseDouble(eng.eval(wallFormula.replace("x", String.valueOf(wallVector.magnitude()))).toString()));
+                wallVector.multiply(Double.parseDouble(eng.eval(replaceInFormula(wallFormula, human, wallVector.magnitude())).toString()));
             } catch (ScriptException e) {
                 throw new RuntimeException("There was a problem with the custom formula, calculating wall's reaction.");
             }
@@ -76,13 +77,22 @@ public class CustomHeuristic extends HumanHeuristic {
 
         zombiesDistanceVector.stream().limit(zombieLimit).forEach(zombieVector -> {
             try {
-                zombieVector.multiply(Double.parseDouble(eng.eval(zombieFormula.replace("x", String.valueOf(zombieVector.magnitude()))).toString()));
+                zombieVector.multiply(Double.parseDouble(eng.eval(replaceInFormula(zombieFormula, human, zombieVector.magnitude())).toString()));
             } catch (ScriptException e) {
                 throw new RuntimeException("There was a problem with the custom formula, calculating zombie's reaction.");
             }
             direction.sub(zombieVector);
         });
         return direction.toNormal();
+    }
+
+    public static String replaceInFormula(String formula, Human human, double distance) {
+        return formula.replace("X", String.valueOf(human.getCoordinate().x))
+                .replace("Y", String.valueOf(human.getCoordinate().y))
+                .replace("Vx", String.valueOf(human.getVelocity().x))
+                .replace("Vy", String.valueOf(human.getVelocity().x))
+                .replace("R", String.valueOf(human.getRadius()))
+                .replace("D", String.valueOf(distance));
     }
 
 }

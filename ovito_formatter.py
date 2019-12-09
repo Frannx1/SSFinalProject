@@ -5,21 +5,26 @@ from PyQt5.QtGui import *
 
 a1=1.51
 a2=1.51
-b1=90
-b2=90
+b1=15
+b2=15
 
 room_border_color = QColor(100,100,100)
-width = 200.0
-height = 200.0
-hole = 50
-y1 = height/2 - hole/2
-y2 = height/2 + hole/2
+relation = 210
+
+width = relation
+height = relation
+entryhole = 70 * relation / 200
+exithole = 27 * relation / 200
+y1 = height/2 - entryhole/2
+y2 = height/2 + entryhole/2
+y3 = height/2 - exithole/2
+y4 = height/2 + exithole/2
 
 border_lines = [
 	[0.0, 0.0, width, 0.0], #Bottom
 	[0.0, height, width, height], #Top
-	[width, 0.0, width, y1], #Right1
-	[width, height, width, y2], #Right2
+	[width, 0.0, width, y3], #Right1
+	[width, height, width, y4], #Right2
 	[0.0, 0.0, 0.0, y1], #Left1
 	[0.0, height, 0.0, y2], #Left2
 ]

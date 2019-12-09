@@ -55,19 +55,24 @@ public enum Message implements MessagePrinter {
             System.out.println("\nThere was a problem with this formula, please try again.\n");
         }
     },
+    SelectFormula {
+        public void print() {
+            System.out.println("\nIn the formula you could use the following variables: X, Y, Vx, Vy, R (from the human) and D that takes different meanings.");
+        }
+    },
     SelectGoalFormula {
         public void print() {
-            System.out.println("\nInsert goal distance formula. The x variable is the distance to the goal:");
+            System.out.println("\nInsert goal distance formula. The D variable is the distance to the goal:");
         }
     },
     SelectWallFormula {
         public void print() {
-            System.out.println("\nInsert wall distance formula. The x variable is the distance to a wall:");
+            System.out.println("\nInsert wall distance formula. The D variable is the distance to a wall:");
         }
     },
     SelectZombieFormula {
         public void print() {
-            System.out.println("\nInsert zombie distance formula. The x variable is the distance to a zombie:");
+            System.out.println("\nInsert zombie distance formula. The D variable is the distance to a zombie:");
         }
     },
     SelectZombieLimit {

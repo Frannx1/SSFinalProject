@@ -86,7 +86,7 @@ public class SimulatorEngine<T extends Entity> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("survivros: " + environment.getSurvivors());
+        System.out.println("survivors: " + environment.getSurvivors());
         return environment.getSurvivors();
     }
 

@@ -47,7 +47,7 @@ public class FixedMagneticHeuristic extends HumanHeuristic {
         });
 
         zombiesDistanceVector.stream().limit(5).forEach(zombieVector -> {
-            zombieVector.multiply(5  / Math.pow(zombieVector.magnitude(), 2));
+            zombieVector.multiply(human.getRadius() * 10 * 5 / Math.pow(zombieVector.magnitude(), 2));
             direction.sub(zombieVector);
         });
         return direction.toNormal();
