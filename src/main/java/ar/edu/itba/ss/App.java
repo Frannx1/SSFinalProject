@@ -31,21 +31,21 @@ public class App {
     static double humanEntrancePeriod = 0.6;
     static double beta = 0.9;
     static double mass = 58;
-    static double exitGoalDiameter = 2;
+    static double exitGoalDiameter = 0.5;
     static double entranceDiameter = 5;
 
     static int humanPopulation = 50;
     static double humanMaxVelocity = 1.5;
     static double humanVisualField = 10;
     static double humanMinRadius = 0.1;
-    static double humanMaxRadius = 0.15;
+    static double humanMaxRadius = 0.11;
     static double humanCollisionEscapeMagnitude = 1.5;
 
     static int zombiePopulation = 30;
     static double zombieMaxVelocity = 0.80;
     static double zombieVisualField = 10;
     static double zombieMinRadius = 0.1;
-    static double zombieMaxRadius = 0.15;
+    static double zombieMaxRadius = 0.11;
     static double zombieCollisionEscapeMagnitude = 1.5;
 
     // for vector field
