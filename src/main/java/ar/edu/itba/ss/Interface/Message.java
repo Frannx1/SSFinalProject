@@ -10,7 +10,7 @@ public enum Message implements MessagePrinter {
     Help {
         public void print() {
             System.out.println("To simulate human and zombies pedestrians with default parameters (width = 15, height = 15, " +
-                    "simulationTime = 50 seg, humanEntrancePeriod = 0.6 (s), humanPopulation = 50, zombiePopulation = 10, " +
+                    "humanEntrancePeriod = 0.6 (s), humanPopulation = 50, zombiePopulation = 10, " +
                     "exitGoalDiameter = 0.5, \nextra humans: humanMaxVelocity = 1.5, humanVisualField = 10.0, " +
                     "humanMinRadius = 1.0, humanMaxRadius = 1.1, humanCollisionEscapeMagnitude 1.5, \nextra zombies: " +
                     "zombieMaxVelocity = 0.8, zombieVisualField = 10.0, zombieMinRadius = 1.0, zombieMaxRadius = 1.1," +
@@ -18,11 +18,11 @@ public enum Message implements MessagePrinter {
             System.out.println("simulate normal [zombieWall]\n");
 
             System.out.println("To simulate human and zombies pedestrians with a few custom parameters:");
-            System.out.println("simulate [width] [height] [simulationTime] [humanEntrancePeriod] [humanPopulation] " +
+            System.out.println("simulate [width] [height] [humanEntrancePeriod] [humanPopulation] " +
                     "[zombiePopulation] [exitGoalDiameter] [zombieWall]\n");
 
             System.out.println("To simulate human and zombies pedestrians with a high custom parameters:");
-            System.out.println("simulate high custom [width] [height] [simulationTime] [humanEntranceFrequency] [humanPopulation] " +
+            System.out.println("simulate high custom [width] [height] [humanEntranceFrequency] [humanPopulation] " +
                     "[zombiePopulation] [exitGoalDiameter] [zombieWall] [humanMaxVelocity] [humanVisualField] [humanMinRadius] [humanMaxRadius] " +
                     "[humanCollisionEscapeMagnitude] [zombieMaxVelocity] [zombieVisualField] [zombieMinRadius] [zombieMaxRadius] [zombieCollisionEscapeMagnitude]\n");
 

@@ -39,7 +39,7 @@ public class App {
     static double humanMaxRadius = 0.11;
     static double humanCollisionEscapeMagnitude = 1.5;
 
-    static int zombiePopulation = 30;
+    static int zombiePopulation = 20;
     static double zombieMaxVelocity = 0.80;
     static double zombieVisualField = 10;
     static double zombieMinRadius = 0.1;
@@ -65,24 +65,24 @@ public class App {
         if( args.length == 1 && args[0].equals("help"))
             Message.Help.print();
         else if(args.length == 3 && args[0].equals("simulate") && args[1].equals("normal")) {
-            normal(width, height, simulationTime, humanEntrancePeriod, humanPopulation, zombiePopulation,
+            normal(width, height, humanEntrancePeriod, humanPopulation, zombiePopulation,
                     humanMaxVelocity, humanVisualField, humanMinRadius, humanMaxRadius,
                     humanCollisionEscapeMagnitude, zombieMaxVelocity, zombieVisualField, zombieMinRadius, zombieMaxRadius,
                     zombieCollisionEscapeMagnitude, exitGoalDiameter, Boolean.parseBoolean(args[2]), "simulation.data", true);
         }
-        else if(args.length == 9 && args[0].equals("simulate")) {
-            normal(Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]),
-                    Double.parseDouble(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]),
+        else if(args.length == 8 && args[0].equals("simulate")) {
+            normal(Double.parseDouble(args[1]), Double.parseDouble(args[2]),
+                    Double.parseDouble(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]),
                     humanMaxVelocity, humanVisualField, humanMinRadius, humanMaxRadius,
                     humanCollisionEscapeMagnitude, zombieMaxVelocity, zombieVisualField, zombieMinRadius, zombieMaxRadius,
-                    zombieCollisionEscapeMagnitude, Integer.parseInt(args[7]), Boolean.parseBoolean(args[8]), "simulation.data", true);
+                    zombieCollisionEscapeMagnitude, Double.parseDouble(args[6]), Boolean.parseBoolean(args[7]), "simulation.data", true);
         }
-        else if(args.length == 21 && args[0].equals("simulate")  && args[1].equals("high")  && args[2].equals("custom")) {
-            normal(Double.parseDouble(args[3]), Double.parseDouble(args[4]), Double.parseDouble(args[5]),
-                    Double.parseDouble(args[6]), Integer.parseInt(args[7]), Integer.parseInt(args[8]),
-                    Double.parseDouble(args[11]), Double.parseDouble(args[12]), Double.parseDouble(args[13]), Double.parseDouble(args[14]), Double.parseDouble(args[15]),
-                    Double.parseDouble(args[16]), Double.parseDouble(args[17]), Double.parseDouble(args[18]), Double.parseDouble(args[19]), Double.parseDouble(args[20]),
-                    Integer.parseInt(args[9]), Boolean.parseBoolean(args[10]), "simulation.data", true);
+        else if(args.length == 20 && args[0].equals("simulate")  && args[1].equals("high")  && args[2].equals("custom")) {
+            normal(Double.parseDouble(args[3]), Double.parseDouble(args[4]),
+                    Double.parseDouble(args[5]), Integer.parseInt(args[6]), Integer.parseInt(args[7]),
+                    Double.parseDouble(args[10]), Double.parseDouble(args[11]), Double.parseDouble(args[12]), Double.parseDouble(args[13]), Double.parseDouble(args[14]),
+                    Double.parseDouble(args[15]), Double.parseDouble(args[16]), Double.parseDouble(args[17]), Double.parseDouble(args[18]), Double.parseDouble(args[19]),
+                    Double.parseDouble(args[8]), Boolean.parseBoolean(args[9]), "simulation.data", true);
         }
         else if(args.length == 7 && args[0].equals("simulate")  && args[1].equals("multiple")  && args[2].equals("density")) {
             try {
@@ -119,7 +119,7 @@ public class App {
         return false;
     }
 
-    private static int normal(double width, double height, double simulationTime, double humanEntrancePeriod,
+    private static int normal(double width, double height, double humanEntrancePeriod,
                                int humanPopulation, int zombiePopulation, double humanMaxVelocity,
                                double humanVisualField, double humanMinRadius, double humanMaxRadius, double humanCollisionEscapeMagnitude,
                                double zombieMaxVelocity, double zombieVisualField, double zombieMinRadius, double zombieMaxRadius, double zombieCollisionEscapeMagnitude,
@@ -236,7 +236,7 @@ public class App {
             int zombieSize = (int) Math.ceil(zombieDeinsity * (size * size));
             List<Integer> survivors = new ArrayList<>();
             for (int j = 0; j < 3; j++) {
-                survivors.add(normal(size, size, simulationTime, humanEntrancePeriod, humanSize, zombieSize, humanMaxVelocity,
+                survivors.add(normal(size, size, humanEntrancePeriod, humanSize, zombieSize, humanMaxVelocity,
                         humanVisualField, humanMinRadius, humanMaxRadius, humanCollisionEscapeMagnitude, zombieMaxVelocity,
                         zombieVisualField, zombieMinRadius, zombieMaxRadius, zombieCollisionEscapeMagnitude,
                         exitGoalDiameter, zombieWall, "sim_" + i + ".data", false));
